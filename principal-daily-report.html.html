@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Report</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+
+<link rel="icon" href="assets/fevicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="assets/fevicon.ico">
+
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/forms.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/principal-daily-report.css">
+<link rel="stylesheet" href="css/mobile.css">
+<link rel="stylesheet" href="css/utilities.css">
+</head>
+
+<body class="principal-body">
+
+<div id="headerContainer"></div>
+
+<div id="overlay" onclick="toggleMenu()"></div>
+
+
+<div class="card">
+
+  <!-- FILTER BAR -->
+  <div class="principal-filters">
+
+    <div class="filter-group">
+      <label>Date</label>
+      <input type="date" id="dateFilter">
+    </div>
+
+    <div class="filter-group">
+      <label>Class</label>
+      <select id="classFilter">
+        <option value="All">All Classes</option>
+        <option value="Class 1">Class 1</option>
+        <option value="Class 2">Class 2</option>
+        <option value="Class 3">Class 3</option>
+        <option value="Class 4">Class 4</option>
+        <option value="Class 5">Class 5</option>
+        <option value="Class 6">Class 6</option>
+        <option value="Class 7">Class 7</option>
+        <option value="Class 8">Class 8</option>
+        <option value="Class 9">Class 9</option>
+        <option value="Class 10">Class 10</option>
+        <option value="Class 11 PCMB">Class 11 PCMB</option>
+        <option value="Class 11 Humanities">Class 11 Humanities</option>
+        <option value="Class 12 PCMB">Class 12 PCMB</option>
+        <option value="Class 12 Humanities">Class 12 Humanities</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Teacher</label>
+      <select id="teacherFilter">
+        <option value="All">All Teachers</option>
+      </select>
+    </div>
+
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="principal-actions">
+    <button id="filterBtn">Apply Filter</button>
+    <button id="pdfBtn">Generate PDF</button>
+  </div>
+
+  <!-- DATA -->
+  <div id="cardView"></div>
+
+  <div id="tableView">
+    <div id="tableBody"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- PDF LIBRARIES -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<!-- FIREBASE MODULES -->
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/principal-daily-report.js"></script>
+<script type="module" src="js/component-loader.js"></script>
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>

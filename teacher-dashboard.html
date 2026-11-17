@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teacher Dashboard</title>
+
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+
+  <link rel="icon" href="assets/fevicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="assets/fevicon.ico">
+
+  <link rel="stylesheet" href="css/mobile.css" />
+  <link rel="stylesheet" href="css/teacher-dashboard.css" />
+  
+</head>
+
+<body>
+  
+
+<div id="headerContainer"></div>
+<div id="dailyReportAssignmentAlert"></div>
+
+<div class="dashboard-container">
+
+    <!-- 🔹 Welcome Card -->
+    <div class="welcome-card">
+      <div>
+        <h2 id="welcomeText">Welcome, Teacher</h2>
+        <p>Have a productive day 🚀</p>
+      </div>
+
+      <button id="markBtn" class="mark-btn">
+        ✔ Mark Present
+      </button>
+    </div>
+
+
+<!-- 🔹 Proxy Report Assignment -->
+<div id="proxyReportCard" style="
+display:none;
+background:#fff4e5;
+border-left:5px solid #ff9800;
+padding:16px;
+margin-top:18px;
+margin-bottom:18px;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.08);
+">
+
+<h3 style="margin:0 0 8px 0;color:#d97706;">
+⚠ Additional Responsibility
+</h3>
+
+<p style="margin:0 0 12px 0;font-size:15px;line-height:1.6;">
+
+<b id="absentTeacherName">Mr./Ms Teacher</b>
+(Class <span id="proxyClass">2</span> Teacher)
+is absent today.
+
+<br><br>
+
+You have been assigned to verify and share today's
+<b>Class <span id="proxyClass2">2</span> Homework Report.</b>
+
+</p>
+
+<button id="shareProxyReportBtn"
+style="
+background:#2563eb;
+color:white;
+border:none;
+padding:10px 18px;
+border-radius:8px;
+cursor:pointer;
+font-weight:600;
+">
+Share Report
+</button>
+
+</div>
+
+
+    <!-- 🔹 Status -->
+  <div class="status-card modern">
+    <div class="status-left">
+      <div id="statusIcon" class="status-icon">
+      ❌
+    </div>
+    <div>
+      <p class="status-title">Today's Status</p>
+      <h3 id="statusText">Not Marked</h3>
+    </div>
+    </div>
+
+    <div class="status-right">
+      📅
+    </div>
+  </div>
+
+    <!-- 🔹 Schedule -->
+    <div class="section-header">
+      <h3 class="section-title">Today's Schedule</h3>
+      <span id="dayBadge" class="day-badge">Day</span>
+    </div>
+
+    <div id="periodContainer" class="period-container"></div>
+    
+
+  </div>
+
+
+  <!-- 🔥 Confirm Popup (FIXED CENTER + RESPONSIVE) -->
+<div id="confirmPopup" class="popup">
+  <div class="popup-box">
+    
+    <h3>Confirm Attendance</h3>
+    
+    <p>
+      Mark yourself as <b>Present</b>.
+    </p>
+    
+    <small class="warning-text">
+      This action cannot be undone.
+    </small>
+
+    <div class="popup-actions">
+      <button id="confirmYes" class="yes-btn">Confirm</button>
+      <button id="confirmNo" class="no-btn">Cancel</button>
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- 🔥 Hidden table (for JS compatibility) -->
+  <table id="timetable" style="display:none;">
+    <tbody></tbody>
+  </table>
+
+
+  <!-- SCRIPTS (same as you gave) -->
+  <script type="module" src="js/teacher-dashboard.js"></script>
+
+  <script type="module">
+    import { markPresent } from "./js/attendance.js";
+    window.markPresent = markPresent;
+  </script>
+
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/pdf.js"></script>
+  <script type="module" src="js/component-loader.js"></script>
+  <script type="module" src="js/app.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script type="module" src="js/report-generator.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+
+<div id="reportContainer"
+style="
+position:fixed;
+left:-99999px;
+top:0;
+">
+</div>
+
+  
+<!-- 🎉 Birthday Confetti Effect -->
+<style>
+#confettiCanvas{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:9999;
+}
+</style>
+
+<canvas id="confettiCanvas"></canvas>
+
+<script>
+const CONFETTI_ENABLED = false; // true = ON | false = OFF
+
+if (CONFETTI_ENABLED) {
+
+const canvas = document.getElementById("confettiCanvas");
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+const colors = [
+  "#FF6B6B",
+  "#FFD93D",
+  "#6BCB77",
+  "#4D96FF",
+  "#9D4EDD",
+  "#FFFFFF"
+];
+
+const confetti = [];
+
+for(let i=0;i<180;i++){
+  confetti.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height-canvas.height,
+    w:4+Math.random()*8,
+    h:8+Math.random()*8,
+    speed:2+Math.random()*3,
+    tilt:Math.random()*360,
+    rotate:Math.random()*360,
+    color:colors[Math.floor(Math.random()*colors.length)]
+  });
+}
+
+let animationId;
+let running = true;
+
+function animate(){
+
+  if(!running) return;
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  confetti.forEach(c=>{
+
+    ctx.save();
+    ctx.translate(c.x,c.y);
+    ctx.rotate(c.rotate*Math.PI/180);
+
+    ctx.fillStyle = c.color;
+    ctx.fillRect(-c.w/2,-c.h/2,c.w,c.h);
+
+    ctx.restore();
+
+    c.y += c.speed;
+    c.x += Math.sin(c.tilt*Math.PI/180);
+    c.tilt += 2;
+    c.rotate += 4;
+
+  });
+
+  animationId = requestAnimationFrame(animate);
+}
+
+animate();
+
+// Stop animation after 5 seconds
+setTimeout(() => {
+  running = false;
+  cancelAnimationFrame(animationId);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  canvas.remove();
+}, 5000);
+
+}else{
+  document.getElementById("confettiCanvas").remove();
+}
+</script>
+
+
+
+  
+</body>
+</html>

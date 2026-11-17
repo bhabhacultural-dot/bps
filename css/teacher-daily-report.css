@@ -1,0 +1,213 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+}
+
+.topbar h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+/* Container */
+.container {
+  padding: 10px;
+}
+
+/* Cards */
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+/* Button */
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.green {
+  background: #28a745;
+}
+
+/* Table */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 300px;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  font-size: 14px;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .container {
+    max-width: 700px;
+    margin: auto;
+  }
+
+  .topbar h2 {
+    font-size: 22px;
+  }
+}
+
+/* Desktop (future ready) */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 900px;
+  }
+}
+
+.action-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.action-card h3 {
+  margin: 0;
+}
+
+/* 🔥 Layout */
+.top-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+}
+
+.mark-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* 🔥 Table */
+.table-container {
+  overflow-x: auto;
+  padding: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+/* 🔥 Proxy highlight */
+td:nth-child(2):contains("Proxy") {
+  color: #007bff;
+  font-weight: bold;
+}
+
+/* 🔥 Mobile responsive */
+@media (max-width: 600px) {
+
+  .top-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .mark-btn {
+    width: 100%;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 8px;
+  }
+}
+
+
+
+
+.confirm-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.confirm-box {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 320px;
+  text-align: center;
+}
+
+.confirm-box h3 {
+  margin-bottom: 10px;
+}
+
+.confirm-box p {
+  margin: 5px 0;
+}
+
+.confirm-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.confirm-actions button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.yes-btn {
+  background: #28a745;
+  color: white;
+}
+
+.no-btn {
+  background: #ddd;
+}

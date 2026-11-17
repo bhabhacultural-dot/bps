@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Chat</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+
+<link rel="icon" href="assets/fevicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="assets/fevicon.ico">
+
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/mobile.css">
+<link rel="stylesheet" href="css/messages.css">
+
+</head>
+
+<body class="teacher-body">
+
+<div id="headerContainer"></div>
+
+<div class="chat-container">
+
+<div id="chatMessages" class="chat-messages"></div>
+
+<div class="chat-input">
+
+<input type="text" id="messageInput" placeholder="Type message...">
+
+<button id="sendBtn">Send</button>
+
+</div>
+
+</div>
+
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/messages.js"></script>
+<script type="module" src="js/component-loader.js"></script>
+<script type="module" src="js/app.js"></script>
+
+
+
+</body>
+</html>

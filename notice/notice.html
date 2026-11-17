@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notice Generator</title>
+
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/layout.css">
+<link rel="stylesheet" href="../css/forms.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/auth.css">
+<link rel="stylesheet" href="../css/principal.css">
+<link rel="stylesheet" href="../css/mobile.css">
+<link rel="stylesheet" href="../css/utilities.css">
+<link rel="stylesheet" href="notice.css">
+
+</head>
+
+<body class="dashboard-body">
+
+<div id="headerContainer"></div>
+
+<div class="card">
+
+<h2>Notice Generator</h2>
+
+<label>Title</label>
+<input type="text" id="title" value="NOTICE">
+
+<label>To</label>
+<input type="text" id="to" value="Dear Parents,">
+
+<label>Body (Content)</label>
+<textarea id="content" rows="6"></textarea>
+
+<label>Signature</label>
+<textarea id="signature" rows="2">Kind Regards,
+Principal</textarea>
+
+<div class="button-row">
+
+<button onclick="previewNotice()">Preview</button>
+
+<button onclick="generatePDF()">Generate PDF</button>
+
+<button onclick="shareImage()">Share Image</button>
+
+</div>
+
+</div>
+
+<div id="previewArea"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<script src="notice-pdf.js"></script>
+
+<script src="notice.js"></script>
+
+<div id="previewModal" class="preview-modal">
+
+  <div class="preview-box">
+
+    <span class="close-preview" onclick="closePreview()">✖</span>
+
+    <img id="previewImage">
+
+  </div>
+
+</div>
+<script type="module" src="/js/header-loader.js"></script>
+<script src="../js/app.js"></script>
+<script type="module" src="../js/auth.js"></script>
+</body>
+
+<script type="module" src="../js/auth.js"></script>
+
+</html>

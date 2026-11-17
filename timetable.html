@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Timetable Management System</title>
+
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+
+<link rel="icon" href="assets/fevicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="assets/fevicon.ico">
+
+  <link rel="stylesheet" href="css/timetable.css" />
+  <link rel="stylesheet" href="css/principal-dashboard.css" />
+  <link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+
+<div id="headerContainer"></div>
+
+<div class="container">
+
+  <h2>Timetable Editor</h2>
+
+  <!-- 🔹 TOP BAR -->
+  <div class="top-bar">
+    <div class="left-controls">
+      <select id="teacherSelect">
+        <option value="">Select Teacher</option>
+      </select>
+
+      <button onclick="loadTimetable()" class="btn load-btn">Load</button>
+    </div>
+
+    <div class="right-controls">
+      <button onclick="resetToDefault()" class="btn reset-btn">
+        Reset Timing
+      </button>
+    </div>
+  </div>
+
+  <!-- 🔹 TABLE WRAPPER (IMPORTANT FIX) -->
+  <div class="table-container">
+    <table id="timetable">
+      <thead>
+        <tr>
+          <th>Day</th>
+
+          <!-- Repeat same structure -->
+          <th>P0
+            <div class="time-box">
+              <input type="time" class="start-time" data-period="0"/>
+              <input type="time" class="end-time" data-period="0"/>
+            </div>
+          </th>
+
+          <th>P1
+            <div class="time-box">
+              <input type="time" class="start-time" data-period="1"/>
+              <input type="time" class="end-time" data-period="1"/>
+            </div>
+          </th>
+
+          <th>P2
+            <div class="time-box">
+              <input type="time" class="start-time" data-period="2"/>
+              <input type="time" class="end-time" data-period="2"/>
+            </div>
+          </th>
+
+          <th>P3
+            <div class="time-box">
+              <input type="time" class="start-time" data-period="3"/>
+              <input type="time" class="end-time" data-period="3"/>
+            </div>
+          </th>
+
+          <th>P4
+            <div class="time-box">
+              <input type="time" class="start-time" data-period="4"/>
+              <input type="time" class="end-time" data-period="4"/>
+            </div>
+          </th>
+
+          <th>P5
+            <div class="time-box">
+              <input type="time" class="start-time" data-period="5"/>
+              <input type="time" class="end-time" data-period="5"/>
+            </div>
+          </th>
+
+          <th>P6
+            <div class="time-box">
+              <input type="time" class="start-time" data-period="6"/>
+              <input type="time" class="end-time" data-period="6"/>
+            </div>
+          </th>
+
+          <th>P7
+            <div class="time-box">
+              <input type="time" class="start-time" data-period="7"/>
+              <input type="time" class="end-time" data-period="7"/>
+            </div>
+          </th>
+
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- 🔹 ACTION BUTTON -->
+  <div class="actions">
+    <button onclick="saveTimetable()" class="btn save-btn">Save</button>
+  </div>
+
+  <!-- 🔹 CSV SECTION FIX -->
+  <div class="csv-section">
+    <h3>Upload CSV</h3>
+
+    <input type="file" id="csvFile">
+    <button onclick="uploadCSV()" class="upload-btn">Upload CSV</button>
+  </div>
+
+</div>
+
+<script type="module" src="js/timetable-management.js"></script>
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/teacher-daily-report.js"></script>
+<script type="module" src="js/pdf.js"></script>
+<script type="module" src="js/component-loader.js"></script>
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>

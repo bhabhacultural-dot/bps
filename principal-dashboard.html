@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Principal Dashboard</title>
+
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+
+  <link rel="icon" href="assets/fevicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="assets/fevicon.ico">
+
+  <link rel="stylesheet" href="css/principal-dashboard.css" />
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/principal-daily-report.css">
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/utilities.css">
+</head>
+
+<body>
+
+<div id="headerContainer"></div>
+<div id="dailyReportAlert"></div>
+<!-- Stats -->
+<section class="stats">
+
+  <div class="card blue">
+    Total Teachers <span id="totalTeachers">0</span>
+  </div>
+
+  <div class="card red">
+    Teachers Absent <span id="absentTeachers">0</span>
+  </div>
+
+  <div class="card orange">
+    Total Classes Today <span id="totalClasses">0</span>
+  </div>
+
+  <div class="card green">
+    Proxies Assigned <span id="totalProxies">0</span>
+  </div>
+
+</section>
+
+<!-- Row 1 -->
+<section class="grid-2">
+
+  <!-- Absentees -->
+  <div class="box">
+    <h3>Today's Absentees</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Teacher</th>
+          <th>Subject</th>
+          <th>Periods Missed</th>
+          <th >Status</th>
+        </tr>
+      </thead>
+
+      <tbody id="absenteesTable"></tbody>
+    </table>
+  </div>
+
+  <!-- Proxies -->
+  <div class="box">
+<div style="display:flex; justify-content:space-between; align-items:center;">
+
+  <h3>Auto Proxy Assignments</h3>
+
+  <div>
+    <button class="btn blue" onclick="printFullReport()">Print</button>
+    <button class="btn green" onclick="downloadFullReport()">Download PDF</button>
+  </div>
+
+</div>
+
+        <div id="proxyStatus" class="proxy-status"></div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Period</th>
+          <th>Class</th>
+          <th>Original</th>
+          <th>Proxy</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody id="proxyTable"></tbody>
+    </table>
+
+        <button class="btn green" onclick="runProxy()">
+      Generate Proxies
+    </button>
+
+  </div>
+
+</section>
+
+<!-- Bottom -->
+<section class="grid-2">
+
+  <div class="box">
+    <h3>Quick Actions</h3>
+    <button class="btn blue" onclick="goToAttendance()">Edit Attendance</button>
+    <button class="btn">Edit Timetable</button>
+  </div>
+
+  <div class="box">
+    <h3>Status</h3>
+    <p>System Active ✅</p>
+    <button onclick="finalizeDay()">End Day</button>
+  </div>
+
+</section>
+
+<div id="proxyModal" class="modal">
+  <div class="modal-box">
+    <h3>Select Proxy Teacher</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Free</th>
+          <th>Today</th>
+          <th>Weekly</th>
+          <th>Score</th>
+          <th>Select</th>
+        </tr>
+      </thead>
+      <tbody id="proxyModalTable"></tbody>
+    </table>
+
+    <button onclick="closeProxyModal()">Close</button>
+  </div>
+</div>
+
+
+<!-- Scripts -->
+<script type="module" src="js/principal-dashboard.js"></script>
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/principal-daily-report.js"></script>
+<script type="module" src="js/component-loader.js"></script>
+<script type="module" src="js/app.js"></script>
+
+
+</body>
+</html>

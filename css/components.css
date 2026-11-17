@@ -1,0 +1,82 @@
+/* =========================
+   LOGIN PAGE
+========================= */
+
+.login-container{
+  width:100%;
+  padding:20px;
+}
+
+.login-card{
+  background:white;
+  padding:30px 25px;
+  border-radius:18px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.3);
+  max-width:400px;
+  margin:auto;
+  animation:fadeIn 0.5s ease-in-out;
+}
+
+.school-title{
+  text-align:center;
+  margin:0;
+  font-size:20px;
+  color:#1e3c72;
+  font-weight:700;
+}
+
+.subtitle{
+  text-align:center;
+  margin-top:5px;
+  margin-bottom:25px;
+  color:#555;
+  font-size:14px;
+  letter-spacing:2px;
+}
+
+/* =========================
+   DATA CARDS
+========================= */
+
+.homework-card{
+  background:white;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-header{
+  font-weight:bold;
+  margin-bottom:6px;
+  color:#4e73df;
+}
+
+.card-actions{
+  display:flex;
+  gap:10px;
+  margin-top:8px;
+}
+
+.edit-btn{
+  flex:1;
+  background:#f6c23e;
+  border:none;
+  padding:6px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.delete-btn{
+  flex:1;
+  background:#e74a3b;
+  color:white;
+  border:none;
+  padding:6px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+#actionButtons{
+  display:flex;
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Attendance Management</title>
+
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+
+  <link rel="stylesheet" href="css/principal-dashboard.css" />
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/attendance.css" />
+  <link rel="stylesheet" href="css/mobile.css">
+
+
+</head>
+
+<body>
+
+<div id="headerContainer"></div>
+
+<section class="container">
+
+<div class="page-header">
+  <button class="back-btn" onclick="goBack()">←</button>
+  <h2>Attendance Editor</h2>
+</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Teacher</th>
+        <th>Subject</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody id="attendanceTable"></tbody>
+  </table>
+
+</section>
+
+<script type="module" src="js/attendance.js"></script>
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/component-loader.js"></script>
+<script type="module" src="js/principal-daily-report.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

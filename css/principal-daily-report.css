@@ -1,0 +1,188 @@
+/* =========================
+   PRINCIPAL TABLE
+========================= */
+
+.principal-table{
+  width:100%;
+  border-collapse:collapse;
+  background:white;
+  box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+.principal-table th{
+  background:#4e73df;
+  color:white;
+  padding:10px;
+  font-size:14px;
+}
+
+.principal-table td{
+  padding:10px;
+  border-bottom:1px solid #eee;
+  font-size:13px;
+}
+
+/* =========================
+   PRINCIPAL FILTER BAR
+========================= */
+
+.principal-filters{
+  display:flex;
+  gap:15px;
+  margin-bottom:15px;
+}
+
+.filter-group{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+
+.filter-group label{
+  font-size:16px;
+  font-weight:600;
+  margin-bottom:4px;
+  color:#333;
+}
+
+.principal-actions{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.principal-actions button{
+  flex:1;
+}
+
+.principal-actions #pdfBtn{
+  background:#1cc869;
+}
+
+.principal-actions #pdfBtn:hover{
+  background:#17a673;
+}
+
+/* =========================
+   TABLE STYLE
+========================= */
+
+table{
+width:100%;
+border-collapse:collapse;
+table-layout:fixed;
+}
+
+#tableView th,
+#tableView td{
+  border:1px solid #ddd;
+  padding:8px;
+  text-align:center;
+}
+
+#tableView th{
+  background:#4e73df;
+  color:white;
+  font-weight:600;
+}
+
+/* =========================
+   MOBILE CARD STYLE
+========================= */
+
+.class-section{
+  margin-bottom:18px;
+}
+
+.class-title{
+  font-weight:600;
+  font-size:15px;
+  color:#2a5298;
+  margin-bottom:8px;
+}
+
+.homework-card{
+  background:#ffffff;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:10px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.08);
+  border-left:4px solid #4e73df;
+}
+
+.homework-card div{
+  font-size:13px;
+  margin-bottom:4px;
+}
+
+/* =========================
+   RESPONSIVE SWITCH
+========================= */
+
+/* Desktop */
+
+#cardView{
+  display:none;
+}
+
+#tableView{
+  display:block;
+}
+
+/* Mobile */
+
+@media(max-width:600px){
+
+  #tableView{
+    display:none;
+  }
+
+  #cardView{
+    display:block;
+  }
+
+  .principal-filters{
+    flex-direction:column;
+  }
+
+  .principal-actions{
+    flex-direction:column;
+  }
+
+}
+/* FORCE MOBILE CARD VIEW */
+
+@media(max-width:600px){
+
+  #tableView{
+    display:none !important;
+  }
+
+  #cardView{
+    display:block !important;
+  }
+
+}
+
+
+.principal-body{
+margin:0;
+min-height:100vh;
+font-family:'Segoe UI', sans-serif;
+background:linear-gradient(135deg,#fdfbfb,#ebedee);
+}
+
+
+.principal-body .card{
+  background:white;
+  margin:25px 20px;
+  padding:22px;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+  max-width:none;
+  width:auto;
+}
+
+td[title] {
+  cursor: pointer;
+}

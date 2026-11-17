@@ -1,0 +1,20 @@
+{
+  "name": "School ERP",
+  "short_name": "ERP",
+  "icons": [
+    {
+      "src": "assets/fevicon.ico",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/fevicon.ico",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb"
+}

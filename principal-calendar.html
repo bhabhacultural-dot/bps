@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Calendar</title>
+
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+
+  <link rel="icon" href="assets/fevicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="assets/fevicon.ico">
+
+  <link rel="stylesheet" href="css/principal-calendar.css">
+  <link rel="stylesheet" href="css/mobile.css">
+</head>
+
+<body>
+<div id="headerContainer"></div>
+<div class="app">
+
+  <!-- Sidebar -->
+   
+  <div class="sidebar">
+    <h3>📅 Calendar</h3>
+    
+    <button id="toggleEdit">Enable Edit</button>
+    
+    <div class="legend">
+      <p><span class="dot event"></span> Event</p>
+      <p><span class="dot holiday"></span> Holiday</p>
+      <p><span class="dot exam"></span> Exam</p>
+      <p><span class="dot other"></span> Other</p>
+    </div>
+    
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    
+
+    <div class="header">
+
+  <div></div> <!-- empty left -->
+
+  <div class="center-controls">
+    <button id="monthViewBtn" class="active">Month</button>
+    <button id="yearViewBtn">Year</button>
+
+    <button id="prevBtn">←</button>
+    <h2 id="monthTitle"></h2>
+    <button id="nextBtn">→</button>
+  </div>
+
+  <div></div> <!-- empty right -->
+
+</div>
+
+    <div id="calendar"></div>
+
+    <!-- 🔹 Monthly Events -->
+    <div id="eventList"></div>
+
+  </div>
+
+</div>
+
+<!-- 🔹 MODAL FORM -->
+<div id="modal" class="modal hidden">
+  <div class="modal-content">
+
+    <h3 id="modalTitle">Add Event</h3>
+
+    <input type="text" id="eventTitle" placeholder="Event Title">
+
+    <select id="eventType">
+      <option value="event">Event</option>
+      <option value="holiday">Holiday</option>
+      <option value="exam">Exam</option>
+      <option value="other">Other</option>
+    </select>
+
+    <div class="modal-actions">
+      <button id="saveEvent">Save</button>
+      <button id="deleteEventBtn">Delete</button>
+      <button id="closeModal">Cancel</button>
+    </div>
+
+  </div>
+</div>
+
+<script type="module" src="js/principal-calendar.js"></script>
+<script type="module" src="js/principal-dashboard.js"></script>
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/principal-daily-report.js"></script>
+<script type="module" src="js/component-loader.js"></script>
+<script type="module" src="js/app.js"></script>
+
+
+</body>
+</html>

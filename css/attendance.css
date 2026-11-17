@@ -1,0 +1,85 @@
+/* 🔹 Page spacing */
+.container {
+  padding: 20px;
+}
+
+/* 🔹 Header bar */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+}
+
+/* 🔹 Back button */
+.back-btn {
+  font-size: 20px;
+  border: none;
+  background: #ea4a4a;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.back-btn:hover {
+  background: #c25b5b;
+}
+
+/* 🔹 Title */
+.page-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* 🔹 Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+thead {
+  background: #f5f5f5;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+/* 🔹 Status tags */
+.tag.green {
+  background: #d4edda;
+  color: #2e7d32;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.tag.red {
+  background: #f8d7da;
+  color: #c62828;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* 🔹 Buttons */
+button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #007bff;
+  color: white;
+}
+
+button:hover {
+  opacity: 0.9;
+}

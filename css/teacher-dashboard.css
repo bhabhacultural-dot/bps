@@ -1,0 +1,915 @@
+/* 🔹 Base */
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f4f6f9;
+}
+
+.dashboard-container {
+  padding: 14px;
+}
+
+/* 🔹 Welcome Card */
+.welcome-card {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.welcome-card h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.welcome-card p {
+  margin: 0;
+  font-size: 13px;
+  color: #777;
+}
+
+/* 🔹 Button FIX */
+.mark-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #22c55e;
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* 🔹 Status */
+.status-card {
+  margin-top: 10px;
+  background: #fff;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* 🔹 Section */
+.section-title {
+  margin: 16px 4px 10px;
+  font-size: 16px;
+}
+
+/* 🔹 Period Cards */
+.period-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 🔹 Base Card */
+.period-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+  border-left: 5px solid #ccc;
+}
+
+.period-top {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+}
+
+.period-bottom {
+  font-size: 14px;
+  color: #555;
+}
+
+/* 🔥 COLOR CONDITIONS */
+
+/* 🟡 Regular */
+.regular {
+  border-left-color: #f59e0b;
+  background: #fffaf0;
+}
+
+/* 🟢 Free */
+.free {
+  border-left-color: #22c55e;
+  background: #f0fdf4;
+}
+
+/* 🔴 Proxy */
+.proxy {
+  border-left-color: #ef4444;
+  background: #fef2f2;
+}
+
+/* 🔥 Popup FIX */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.4);
+  z-index: 999;
+}
+
+.popup-box {
+  width: 90%;
+  max-width: 280px;  
+  background: white;
+  padding: 18px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.popup-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.popup-actions button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.yes-btn {
+  background: #22c55e;
+  color: white;
+}
+
+.no-btn {
+  background: #e5e7eb;
+}
+
+/* 🔹 Responsive tweak */
+@media (min-width: 600px) {
+  .dashboard-container {
+    max-width: 420px;
+    margin: auto;
+  }
+}
+
+/* 🔥 Overlay */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.4);
+  z-index: 999;
+}
+
+/* 🔥 Box */
+.popup-box {
+  width: 90%;
+  max-width: 340px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* 🔥 Heading */
+.popup-box h3 {
+  margin-bottom: 8px;
+}
+
+/* 🔥 Text */
+.popup-box p {
+  margin: 6px 0;
+}
+
+/* 🔥 Warning */
+.warning-text {
+  color: red;
+  font-size: 13px;
+}
+
+/* 🔥 Buttons */
+.popup-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.popup-actions button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* Confirm */
+.yes-btn {
+  background: #2ea44f;
+  color: white;
+}
+
+/* Cancel */
+.no-btn {
+  background: #e5e7eb;
+}
+
+
+
+
+
+/* 🔹 Modern Status Card */
+.status-card.modern {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  margin-top: 10px;
+}
+
+.status-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+/* ❌ Not marked */
+.status-icon.red {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* ✅ Present */
+.status-icon.green {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.status-title {
+  font-size: 13px;
+  color: #777;
+  margin: 0;
+}
+
+#statusText {
+  margin: 0;
+  font-size: 18px;
+}
+
+/* Right icon */
+.status-right {
+  background: #e0ecff;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 18px;
+}
+
+
+.status-card.modern {
+  backdrop-filter: blur(6px);
+}
+
+.status-title {
+  font-size: 13px;
+  color: #777;
+  margin: 0;
+  text-align: left;
+}
+
+#statusText {
+  margin: 2px 0 0;
+  font-size: 18px;
+  text-align: left;
+}
+
+#statusText {
+  margin: -2px 0 0; /* 🔥 brings closer */
+  line-height: 1.5;
+}
+
+
+.status-title {
+  margin: 0;
+  line-height: 1.2; /* 🔥 tighter */
+}
+
+
+/* 🔥 Day */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 4px 10px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 16px;
+}
+
+.day-badge {
+  font-size: 12px;
+  padding: 4px 10px;
+  background: #dbeafe;
+  color: #2563eb;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+
+
+
+.popup-box h3 {
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.popup-box p {
+  font-size: 13px;
+}
+
+.warning-text {
+  font-size: 12px;
+}
+
+.period-top span:last-child {
+  font-size: 13px;   /* 🔽 chhota */
+  font-weight: 500;  /* normal */
+  color: #666;       /* halka grey */
+}
+
+.period-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+/* 🔥 Overlay */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.4);
+  z-index: 999;
+  padding: 12px; /* 🔥 mobile safety */
+}
+
+/* 🔥 Compact Box */
+.popup-box {
+  width: 100%;
+  max-width: 260px; /* 🔥 chota */
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* 🔥 Heading */
+.popup-box h3 {
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+/* 🔥 Text */
+.popup-box p {
+  font-size: 13px;
+  margin: 4px 0;
+}
+
+/* 🔥 Warning */
+.warning-text {
+  font-size: 11px;
+  color: red;
+}
+
+/* 🔥 Buttons */
+.popup-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* 🔥 Buttons compact */
+.popup-actions button {
+  flex: 1;
+  padding: 8px;
+  font-size: 13px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* Confirm */
+.yes-btn {
+  background: #22c55e;
+  color: white;
+}
+
+/* Cancel */
+.no-btn {
+  background: #e5e7eb;
+}
+
+
+.popup-box {
+  animation: popupScale 0.2s ease;
+}
+
+@keyframes popupScale {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+
+
+
+
+
+/* =====================================
+   PREMIUM TEACHER DASHBOARD UI
+===================================== */
+
+body {
+  background: #f3f6fb;
+  color: #17243b;
+  font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+.dashboard-container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 22px 18px 40px;
+}
+
+/* WELCOME CARD */
+
+.welcome-card {
+  background: linear-gradient(135deg, #17243b, #263f63);
+  color: #fff;
+  padding: 24px;
+  border-radius: 18px;
+  gap: 18px;
+  box-shadow: 0 8px 24px rgba(23,36,59,.15);
+}
+
+.welcome-card h2 {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -.4px;
+}
+
+.welcome-card p {
+  color: #c6d3e5;
+  margin-top: 6px;
+}
+
+/* MARK PRESENT BUTTON */
+
+.mark-btn {
+  background: linear-gradient(135deg, #10a66b, #078653);
+  color: #fff;
+  min-height: 48px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  box-shadow: 0 4px 12px rgba(16,166,107,.22);
+  transition: .2s ease;
+  cursor: pointer;
+}
+
+.mark-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 16px rgba(16,166,107,.3);
+}
+
+.mark-btn:active {
+  transform: scale(.98);
+}
+
+/* ATTENDANCE STATUS */
+
+.status-card.modern {
+  background: #fff;
+  border: 1px solid #e8edf4;
+  border-radius: 16px;
+  padding: 17px;
+  margin-top: 16px;
+  box-shadow: 0 4px 14px rgba(23,36,59,.045);
+}
+
+.status-title {
+  color: #7b8798;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+#statusText {
+  font-size: 17px;
+  font-weight: 700;
+  color: #17243b;
+}
+
+/* SCHEDULE HEADING */
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 28px 2px 15px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 750;
+  color: #17243b;
+}
+
+.day-badge {
+  background: #e8efff;
+  color: #315cbb;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* PERIOD CARDS */
+
+.period-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.period-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e6ebf2;
+  border-left: 4px solid #64748b;
+  border-radius: 15px;
+  padding: 16px;
+  gap: 12px;
+  box-shadow: 0 3px 12px rgba(23,36,59,.045);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.period-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(23,36,59,.09);
+}
+
+.period-top {
+  align-items: center;
+  color: #17243b;
+  font-size: 15px;
+  gap: 8px;
+}
+
+.period-top span:last-child {
+  color: #778397;
+  font-size: 11px;
+  font-weight: 500;
+  text-align: right;
+}
+
+.period-bottom {
+  color: #536176;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+/* REGULAR CLASS */
+
+.period-card.regular {
+  background: #fff;
+  border: 1px solid #dce7fa;
+  border-left: 4px solid #4778d5;
+}
+
+.period-card.regular::before {
+  content: "REGULAR CLASS";
+  display: inline-flex;
+  width: fit-content;
+  background: #eaf1ff;
+  color: #315cbb;
+  padding: 5px 9px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .6px;
+}
+
+/* FREE PERIOD */
+
+.period-card.free {
+  background: #f4fbf7;
+  border: 1px solid #ccebd9;
+  border-left: 4px solid #20a46b;
+}
+
+.period-card.free::before {
+  content: "FREE PERIOD";
+  display: inline-flex;
+  width: fit-content;
+  background: #dff6e9;
+  color: #147747;
+  padding: 5px 9px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .6px;
+}
+
+.period-card.free .period-bottom {
+  color: #147747;
+  font-weight: 600;
+}
+
+/* PROXY DUTY */
+
+.period-card.proxy {
+  background: #fff8f0;
+  border: 1px solid #f6dfc3;
+  border-left: 4px solid #e58a32;
+}
+
+.period-card.proxy::before {
+  content: "PROXY DUTY";
+  display: inline-flex;
+  width: fit-content;
+  background: #ffecd7;
+  color: #a85a12;
+  padding: 5px 9px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .6px;
+}
+
+/* MOBILE */
+
+@media (max-width: 520px) {
+  .dashboard-container {
+    padding: 15px 13px 30px;
+  }
+
+  .period-container {
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+
+  .welcome-card {
+    padding: 21px;
+  }
+
+  .period-card {
+    padding: 15px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+}
+
+
+
+
+/* =====================================
+   PREMIUM MARK PRESENT BUTTON
+===================================== */
+
+.mark-btn {
+  width: 100%;
+  min-height: 50px;
+  padding: 13px 20px;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 12px;
+
+  background: linear-gradient(135deg, #16b879, #078653);
+  color: #fff;
+
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: .3px;
+
+  box-shadow:
+    0 5px 14px rgba(7,134,83,.22),
+    inset 0 1px 0 rgba(255,255,255,.18);
+
+  transition: all .2s ease;
+  cursor: pointer;
+}
+
+.mark-btn:hover {
+  background: linear-gradient(135deg, #19c986, #07945b);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(7,134,83,.28);
+}
+
+.mark-btn:active {
+  transform: scale(.98);
+}
+
+/* =====================================
+   PREMIUM ATTENDANCE CONFIRM POPUP
+===================================== */
+
+.popup {
+  backdrop-filter: blur(7px);
+  background: rgba(15, 27, 45, .48);
+}
+
+.popup-box {
+  width: calc(100% - 36px);
+  max-width: 390px;
+  padding: 28px 25px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid #edf0f5;
+
+  box-shadow: 0 20px 60px rgba(15,27,45,.2);
+
+  animation: attendancePopupIn .22s ease-out;
+}
+
+.popup-box h3 {
+  color: #17243b;
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 0 12px;
+}
+
+.popup-box p {
+  color: #526176;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.popup-box .warning-text {
+  display: block;
+  color: #d97706;
+  background: #fff7e9;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  margin: 14px 0 20px;
+}
+
+.popup-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.popup-actions button {
+  flex: 1;
+  min-height: 43px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.yes-btn {
+  background: linear-gradient(135deg, #16b879, #078653);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(7,134,83,.18);
+}
+
+.yes-btn:hover {
+  background: #078653;
+  transform: translateY(-1px);
+}
+
+.no-btn {
+  background: #eef1f6;
+  color: #43516a;
+}
+
+.no-btn:hover {
+  background: #e1e6ee;
+}
+
+/* POPUP ANIMATION */
+
+@keyframes attendancePopupIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 520px) {
+  .mark-btn {
+    min-height: 47px;
+    font-size: 14px;
+  }
+
+  .popup-box {
+    padding: 24px 20px;
+    border-radius: 17px;
+  }
+}
+
+
+
+/* FIX: ATTENDANCE POPUP OVERFLOW */
+
+.popup {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  padding: 16px;
+  box-sizing: border-box;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+.popup-box {
+  width: 100%;
+  max-width: 390px;
+  min-width: 0;
+  box-sizing: border-box;
+  margin: auto;
+  flex-shrink: 1;
+}
+
+.popup-actions {
+  width: 100%;
+  min-width: 0;
+}
+
+.popup-actions button {
+  min-width: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  .popup {
+    padding: 14px;
+  }
+
+  .popup-box {
+    max-width: 100%;
+    padding: 22px 16px;
+  }
+
+  .popup-box h3 {
+    font-size: 18px;
+  }
+}

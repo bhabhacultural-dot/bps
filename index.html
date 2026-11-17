@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Login · BPS</title>
+  <!-- Google Material Icons (modern) -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <!-- Google Font (Inter) for clean look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+  <!-- your existing CSS (kept) -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/principal-daily-report.css">
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/utilities.css">
+  <!-- extra modern polish (light theme) -->
+  <style>
+    /* --- light glassmorphism + modern polish (keeps all IDs untouched) --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body.login-body {
+      background: linear-gradient(145deg, #e8edf5 0%, #d5dde8 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      padding: 16px;
+      backdrop-filter: blur(2px);
+      margin: 0;
+    }
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+      padding: 0;
+    }
+    .flip-card {
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+      position: relative;
+    }
+    /* glass card for all panels - light theme */
+    .login-card {
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border-radius: 40px;
+      padding: 36px 28px 32px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.10), 0 0 0 1px rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      transition: all 0.2s ease;
+      color: #1a2639;
+      width: 100%;
+    }
+    .school-title {
+      font-weight: 600;
+      font-size: 24px;
+      letter-spacing: -0.3px;
+      color: #1a2639;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      margin-bottom: 2px;
+    }
+    .subtitle {
+      color: rgba(26, 38, 57, 0.6);
+      font-size: 13px;
+      letter-spacing: 3px;
+      font-weight: 500;
+      margin-bottom: 28px;
+      text-transform: uppercase;
+    }
+    .input-group label {
+      color: #1a2639;
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 30px;
+      font-size: 15px;
+      color: #1a2639;
+      transition: all 0.25s ease;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      backdrop-filter: blur(4px);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .input-group input:focus {
+      border-color: #3b7bff;
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0 0 4px rgba(59, 123, 255, 0.08);
+    }
+    .input-group input::placeholder {
+      color: rgba(26, 38, 57, 0.35);
+      font-weight: 400;
+    }
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .password-wrapper input {
+      padding-right: 48px;
+    }
+    .eye-icon {
+      position: absolute;
+      right: 16px;
+      font-size: 22px;
+      color: rgba(26, 38, 57, 0.5);
+      cursor: pointer;
+      transition: 0.2s;
+      user-select: none;
+      background: transparent;
+      border: none;
+      line-height: 1;
+    }
+    .eye-icon:hover {
+      color: #1a2639;
+    }
+    .login-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 18px 0 22px;
+    }
+    .login-options div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .login-options input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #3b7bff;
+      cursor: pointer;
+      margin: 0;
+      background: rgba(255,255,255,0.6);
+      border-radius: 4px;
+    }
+    .login-options label {
+      color: #1a2639;
+      font-size: 14px;
+      font-weight: 450;
+      cursor: pointer;
+    }
+    .login-options a {
+      color: rgba(26, 38, 57, 0.7);
+      font-size: 14px;
+      text-decoration: none;
+      font-weight: 450;
+      transition: 0.2s;
+      border-bottom: 1px solid transparent;
+    }
+    .login-options a:hover {
+      color: #1a2639;
+      border-bottom-color: rgba(26, 38, 57, 0.2);
+    }
+    /* buttons modern */
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 40px;
+      background: linear-gradient(135deg, #6a9eff, #3b7bff);
+      color: #fff;
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 8px 24px rgba(59, 123, 255, 0.25);
+      margin-top: 6px;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(59, 123, 255, 0.35);
+      background: linear-gradient(135deg, #7aafff, #4a8aff);
+    }
+    .login-btn:active {
+      transform: scale(0.98);
+      box-shadow: 0 6px 16px rgba(59, 123, 255, 0.2);
+    }
+    .login-btn:disabled {
+      opacity: 0.7;
+      transform: scale(0.98);
+      box-shadow: 0 4px 12px rgba(59, 123, 255, 0.15);
+      cursor: not-allowed;
+    }
+    /* Google button — official coloured logo, light theme */
+    .google-btn {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 40px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(4px);
+      color: #1a2639;
+      font-weight: 500;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 12px;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .google-btn:hover {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.12);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+    /* Official Google Logo: coloured G */
+    .google-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+    .google-logo svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+
+    .signup-section {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: rgba(26, 38, 57, 0.6);
+    }
+    .signup-section a {
+      color: #1a2639;
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(26, 38, 57, 0.15);
+      padding-bottom: 1px;
+      transition: 0.2s;
+    }
+    .signup-section a:hover {
+      border-bottom-color: #1a2639;
+    }
+    /* forgot / signup panels - light */
+    .flip-back .login-card, .flip-signup .login-card {
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(18px);
+    }
+    .flip-back h2, .flip-signup h2 {
+      font-weight: 500;
+      font-size: 22px;
+      color: #1a2639;
+      letter-spacing: -0.2px;
+      margin-bottom: 6px;
+    }
+    .flip-back p, .flip-signup p {
+      color: rgba(26, 38, 57, 0.6);
+      font-size: 14px;
+    }
+    .flip-back input, .flip-signup input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 30px;
+      font-size: 15px;
+      color: #1a2639;
+      margin-bottom: 14px;
+      transition: 0.2s;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .flip-back input:focus, .flip-signup input:focus {
+      border-color: #3b7bff;
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0 0 4px rgba(59, 123, 255, 0.08);
+    }
+    .flip-back .login-btn, .flip-signup .login-btn {
+      margin-top: 4px;
+    }
+    .back-link {
+      color: rgba(26, 38, 57, 0.6);
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: 0.2s;
+      border-bottom: 1px solid transparent;
+    }
+    .back-link:hover {
+      color: #1a2639;
+      border-bottom-color: rgba(26, 38, 57, 0.2);
+    }
+    .material-icons-round {
+      vertical-align: middle;
+      font-size: 22px;
+    }
+    .spinner-icon {
+      animation: spin 0.9s linear infinite;
+      font-size: 22px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* mobile extra care */
+    @media (max-width: 480px) {
+      .login-card {
+        padding: 28px 18px 24px;
+        border-radius: 32px;
+      }
+      .school-title {
+        font-size: 22px;
+      }
+      .login-btn, .google-btn {
+        font-size: 15px;
+        padding: 13px;
+      }
+      .google-logo {
+        width: 22px;
+        height: 22px;
+      }
+      .google-logo svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+    /* toast - light */
+    #toast {
+      font-family: 'Inter', sans-serif;
+      border-radius: 40px;
+      padding: 12px 24px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0,0,0,0.04);
+      color: #1a2639;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+    }
+    .flip-front, .flip-back, .flip-signup {
+      display: none;
+    }
+    .flip-front.active, .flip-back.active, .flip-signup.active {
+      display: block;
+    }
+  </style>
+</head>
+<body class="login-body">
+
+<div class="login-container">
+
+  <div class="flip-card">
+
+    <!-- LOGIN PANEL (all IDs unchanged) -->
+    <div class="flip-front login-card active" id="loginPanel">
+      <h1 class="school-title">BHABHA PUBLIC SCHOOL</h1>
+      <p class="subtitle">JAIPUR</p>
+
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="Enter your email" autocomplete="email">
+      </div>
+
+      <div class="input-group password-group">
+        <label>Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" placeholder="Enter password" autocomplete="current-password">
+          <span id="togglePassword" class="eye-icon material-icons-round">visibility_off</span>
+        </div>
+      </div>
+
+      <div class="login-options">
+        <div>
+          <input type="checkbox" id="rememberMe">
+          <label for="rememberMe">Remember Me</label>
+        </div>
+        <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+      </div>
+
+      <button class="login-btn" id="loginBtn">
+        <span id="loginBtnText">LOGIN</span>
+      </button>
+
+      <!-- Google Login button with official coloured logo -->
+      <button class="google-btn" id="googleLoginBtn">
+        <span class="google-logo">
+          <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+            <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+            <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
+            <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
+          </svg>
+        </span>
+        Sign in with Google
+      </button>
+
+      <div class="signup-section">
+        <span>Don't have an account?</span>
+        <a href="#" id="signupLink">Sign Up</a>
+      </div>
+    </div>
+
+    <!-- FORGOT PASSWORD (all IDs unchanged) -->
+    <div class="flip-back login-card" id="forgotPanel">
+      <h2 style="text-align:center;margin-bottom:6px;">Forgot Password</h2>
+      <p style="font-size:14px;color:rgba(26,38,57,0.6);text-align:center;margin-bottom:12px;">
+        Enter your email to receive a reset link.
+      </p>
+      <p style="font-size:13px;color:rgba(200,80,80,0.7);text-align:center;margin-top:-4px;margin-bottom:16px;">
+        * Check Spam/Junk if you don't see it.
+      </p>
+      <input type="email" id="resetEmail" placeholder="Enter your email" autocomplete="email">
+      <button class="login-btn" id="resetBtn">Request Reset Link</button>
+      <div style="text-align:center;margin-top:18px;">
+        <a href="#" id="backToLogin" class="back-link">
+          <span class="material-icons-round" style="font-size:18px;">arrow_back</span> Back to Login
+        </a>
+      </div>
+    </div>
+
+    <!-- SIGNUP PANEL (all IDs unchanged) -->
+    <div class="flip-signup login-card" id="signupPanel">
+      <h2 style="text-align:center;margin-bottom:8px;">Create Account</h2>
+      <p style="text-align:center;color:rgba(26,38,57,0.5);font-size:14px;margin-bottom:16px;">Join as a teacher</p>
+      <input type="text" id="signupName" placeholder="Full Name" autocomplete="name">
+      <input type="email" id="signupEmail" placeholder="Email" autocomplete="email">
+      <input type="password" id="signupPassword" placeholder="Password" autocomplete="new-password">
+      <button class="login-btn" id="signupBtn">Create Account</button>
+      <div style="text-align:center;margin-top:16px;">
+        <a href="#" id="backFromSignup" class="back-link">
+          <span class="material-icons-round" style="font-size:18px;">arrow_back</span> Back to Login
+        </a>
+      </div>
+    </div>
+
+  </div> <!-- flip-card -->
+</div> <!-- login-container -->
+
+<!-- toast (kept) -->
+<div id="toast"></div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const eye = document.getElementById("togglePassword");
+    const password = document.getElementById("password");
+
+    if (!eye || !password) return;
+
+    eye.addEventListener("click", function () {
+        const show = password.type === "password";
+
+        password.type = show ? "text" : "password";
+        eye.textContent = show ? "🙈" : "👁";
+    });
+});
+</script>
+
+<!-- all scripts unchanged (exactly as before) -->
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/component-loader.js"></script>
+<script type="module" src="js/app.js"></script>
+
+<!-- preserve pushState -->
+<script>
+window.history.pushState(null, "", window.location.href);
+window.onpopstate = function () {
+  window.history.pushState(null, "", window.location.href);
+};
+</script>
+
+<!-- FIX: password visibility toggle - clean & functional, no conflicts -->
+<script>
+  (function() {
+    const toggle = document.getElementById('togglePassword');
+    const pwd = document.getElementById('password');
+
+    if (toggle && pwd) {
+      // Remove any existing listener to avoid conflicts, then set our own
+      const newToggle = toggle.cloneNode(true);
+      toggle.parentNode.replaceChild(newToggle, toggle);
+      const freshToggle = document.getElementById('togglePassword');
+
+      // Set initial icon
+      freshToggle.textContent = 'visibility_off';
+
+      freshToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isPassword = pwd.getAttribute('type') === 'password';
+        pwd.setAttribute('type', isPassword ? 'text' : 'password');
+        freshToggle.textContent = isPassword ? 'visibility' : 'visibility_off';
+      });
+    }
+
+    // Login button loading state (kept)
+    const loginBtn = document.getElementById('loginBtn');
+    const loginText = document.getElementById('loginBtnText') || loginBtn;
+    if (loginBtn) {
+      loginBtn.addEventListener('click', function(e) {
+        if (this.disabled) return;
+        const originalText = loginText.innerText;
+        if (originalText !== 'LOGIN' && originalText !== 'Signing In...') return;
+        this.disabled = true;
+        loginText.innerText = 'Signing In...';
+        const spinner = document.createElement('span');
+        spinner.className = 'material-icons-round spinner-icon';
+        spinner.innerText = 'refresh';
+        loginText.before(spinner);
+        this._spinner = spinner;
+        setTimeout(() => {
+          if (this.disabled) {
+            this.disabled = false;
+            loginText.innerText = 'LOGIN';
+            if (this._spinner) {
+              this._spinner.remove();
+              delete this._spinner;
+            }
+          }
+        }, 8000);
+      });
+    }
+
+    // Toast observer (kept)
+    const toast = document.getElementById('toast');
+    if (toast) {
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.attributeName === 'class') {
+            if (toast.classList.contains('error')) {
+              const btn = document.getElementById('loginBtn');
+              if (btn && btn.disabled) {
+                btn.disabled = false;
+                const text = document.getElementById('loginBtnText');
+                if (text) text.innerText = 'LOGIN';
+                if (btn._spinner) {
+                  btn._spinner.remove();
+                  delete btn._spinner;
+                }
+              }
+            }
+          }
+        });
+      });
+      observer.observe(toast, { attributes: true });
+    }
+  })();
+</script>
+
+</body>
+</html>

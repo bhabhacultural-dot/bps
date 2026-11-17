@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Backup Management</title>
+
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/teacher-backup-management.css">
+</head>
+
+<body>
+
+  <div id="headerContainer"></div>
+
+  <main class="backup-container">
+
+    <div class="backup-heading">
+      <div>
+        <h1>Teacher Backup Management</h1>
+        <p>Manage class-wise teacher assignments</p>
+      </div>
+      <div id="teacherCount" class="teacher-count">Loading...</div>
+    </div>
+
+    <div id="backupMessage" class="backup-message">
+      Loading teacher records from Firebase...
+    </div>
+
+    <section id="classSections" class="class-sections"></section>
+
+    <section class="non-class-section">
+      <div class="non-class-heading">
+        <div>
+          <h2>Non-Class Teachers</h2>
+          <p>Manage teachers eligible for automatic Daily Report assignments</p>
+        </div>
+        <span id="nonClassCount">0</span>
+      </div>
+
+      <div id="nonClassTeachers" class="non-class-list"></div>
+    </section>
+
+  </main>
+
+  <script type="module" src="js/teacher-backup-management.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/component-loader.js"></script>
+  <script type="module" src="js/app.js"></script>
+
+</body>
+</html>

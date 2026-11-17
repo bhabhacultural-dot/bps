@@ -1,0 +1,41 @@
+/* =========================
+   GLOBAL RESET
+========================= */
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+}
+
+/* =========================
+   BACKGROUNDS
+========================= */
+
+.login-body{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#1e3c72,#2a5298);
+  font-family:'Segoe UI',sans-serif;
+}
+
+.teacher-body{
+  margin:0;
+  min-height:100vh;
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,#4e73df,#1cc88a);
+}
+
+/*background colour*/
+
+.teacher-body{
+margin:0;
+min-height:100vh;
+font-family:'Segoe UI', sans-serif;
+background:linear-gradient(135deg,#eef2ff,#e0f7f4);
+}

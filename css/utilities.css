@@ -1,0 +1,110 @@
+#overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.4);
+display:none;
+z-index:1500;
+}
+
+#overlay.show{
+display:block;
+}
+
+.logout-link{
+  color:#f41d05;
+  font-weight:600;
+}
+
+/* =========================
+   TOAST NOTIFICATION
+========================= */
+
+#toast{
+  position: fixed;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0;
+  transition: all 0.35s ease;
+  z-index: 9999;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  color: white;
+  white-space: nowrap;
+}
+
+#toast.show{
+  opacity:1;
+  transform: translateX(-50%) translateY(0);
+}
+
+#toast.success{ background:#28a745; }
+#toast.error{ background:#dc3545; }
+
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.confirm-modal{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.45);
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  opacity:0;
+  pointer-events:none;
+  transition:0.3s;
+
+  z-index:9999;
+}
+
+.confirm-modal.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.confirm-box{
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  width:280px;
+  text-align:center;
+  box-shadow:0 15px 40px rgba(0,0,0,0.3);
+}
+
+.confirm-buttons{
+  display:flex;
+  gap:10px;
+}
+
+.confirm-buttons button{
+  flex:1;
+  width:auto;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.cancel-btn{
+  background:#ddd;
+  color:#333;
+}
+
+.delete-btn{
+  background:#e74a3b;
+  color:white;
+}

@@ -1,0 +1,56 @@
+<!-- MOBILE HEADER -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<div class="mobile-header">
+
+  <div class="menu-icon" onclick="toggleMenu()">☰</div>
+
+<div class="header-title" id="pageTitle"></div>
+
+<div class="header-icons">
+
+<div class="chat-icon" onclick="openChat()">
+<span class="material-icons header-icon">chat</span>
+<span id="chatBadge" class="chat-badge"></span>
+</div>
+
+<span class="material-icons header-icon">notifications</span>
+
+
+<img id="profilePic" class="profile-pic"
+src="/assets/default-avatar.png"
+onclick="toggleMenu()">
+
+
+
+
+</div>
+
+</div>
+
+
+<!-- SIDE MENU -->
+
+<div id="sideMenu" class="side-menu">
+
+  <div class="menu-top">
+
+<span class="material-icons menu-close" onclick="toggleMenu()">close</span>
+
+</div>
+
+  <div class="menu-header">
+
+    <img
+      id="menuProfilePic"
+      src="/assets/default-avatar.png">
+
+    <h4 id="menuUserName">User</h4>
+
+  </div>
+
+  <!-- MENU ITEMS JS SE LOAD HONGE -->
+  <div id="menuItems"></div>
+
+</div>
+
+<div id="overlay" onclick="toggleMenu()"></div>

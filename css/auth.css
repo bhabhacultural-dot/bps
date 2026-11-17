@@ -1,0 +1,100 @@
+/* =========================
+   PASSWORD TOGGLE
+========================= */
+
+.password-wrapper{
+  position:relative;
+  display:flex;
+  align-items:center;
+}
+
+.password-wrapper input{
+  width:100%;
+  padding-right:40px;
+}
+
+.eye-icon{
+  position:absolute;
+  right:12px;
+  cursor:pointer;
+  font-size:16px;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  z-index: 2;
+}
+
+.eye-icon:focus{
+  outline:none;
+}
+
+/* =========================
+   LOGIN OPTIONS
+========================= */
+
+.login-options{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+.login-options div{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.login-options input[type="checkbox"]{
+  width:auto;
+  margin:0;
+}
+
+.login-options label{
+  margin:0;
+  font-size:13px;
+}
+
+.login-options a{
+  font-size:13px;
+  text-decoration:none;
+  color:#2a5298;
+}
+
+.signup-section{
+  text-align:center;
+  margin-top:15px;
+  font-size:13px;
+}
+
+.signup-section a{
+  text-decoration:none;
+  font-weight:bold;
+  color:#2a5298;
+}
+
+/* =========================
+   AUTH PANEL SYSTEM
+========================= */
+
+.flip-card{
+  width:100%;
+  max-width:400px;
+  margin:auto;
+  position:relative;
+}
+
+.flip-front{ display:block; }
+.flip-back,
+.flip-signup{ display:none; }
+
+.flip-front.active,
+.flip-back.active,
+.flip-signup.active{
+  display:block;
+}
+
+.flip-front:not(.active),
+.flip-back:not(.active),
+.flip-signup:not(.active){
+  display:none;
+}
