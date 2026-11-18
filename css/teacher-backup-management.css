@@ -252,3 +252,73 @@ body {
   accent-color: #315cbb;
   cursor: pointer;
 }
+
+
+.daily-report-eligibility {
+  background: var(--card-bg, #fff);
+  border-radius: 12px;
+  padding: 22px;
+  margin: 25px 0;
+  border: 1px solid #e5e7eb;
+}
+
+.eligibility-controls {
+  margin: 20px 0;
+}
+
+.eligibility-controls label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.eligibility-controls select {
+  width: 100%;
+  max-width: 400px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.eligibility-class-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.eligibility-class-option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.eligibility-class-option input {
+  width: 17px;
+  height: 17px;
+  accent-color: #2563eb;
+}
+
+.eligibility-actions button {
+  padding: 11px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.eligibility-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#eligibilityMessage {
+  display: block;
+  margin-top: 12px;
+  font-size: 13px;
+}

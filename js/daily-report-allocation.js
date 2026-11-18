@@ -13,9 +13,7 @@ import {
 
 const CLASS_LIST = [
   "Class 1", "Class 2", "Class 3", "Class 4", "Class 5",
-  "Class 6", "Class 7", "Class 8", "Class 9", "Class 10",
-  "Class 11 PCMB", "Class 11 Humanities",
-  "Class 12 PCMB", "Class 12 Humanities"
+  "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"
 ];
 
 function todayKey() {
@@ -68,6 +66,7 @@ export function stopDailyReportAllocation() {
 }
 
 
+
 async function allocateDailyReports(attendance, today) {
   const usersSnap = await getDocs(collection(db, "users"));
 
@@ -77,8 +76,11 @@ async function allocateDailyReports(attendance, today) {
       id: d.id,
       name: d.data().name || d.id,
       eligible: d.data().dailyReportEligible === true,
+      dailyReportClasses: Array.isArray(d.data().dailyReportClasses)
+  ? d.data().dailyReportClasses
+  : [],
       present: attendance[d.id] === true,
-      explicitlyAbsent: attendance[d.id] === false
+      explicitlyAbsent: attendance[d.id] !== true
     }));
 
   const settings = await Promise.all(
@@ -96,17 +98,13 @@ async function allocateDailyReports(attendance, today) {
     })
   );
 
-  const classTeacherMap = Object.fromEntries(
-    settings.map(s => [s.className, s.classTeacherId])
-  );
-
   const absentClasses = settings.filter(s => {
     const teacher = teachers.find(t => t.id === s.classTeacherId);
     return teacher?.explicitlyAbsent === true;
   });
 
   const classTeacherIds = new Set(
-    Object.values(classTeacherMap).filter(Boolean)
+    settings.map(s => s.classTeacherId).filter(Boolean)
   );
 
   const eligibleNCTs = teachers.filter(t =>
@@ -123,6 +121,7 @@ async function allocateDailyReports(attendance, today) {
   const assignmentRef = doc(db, "daily_report_assignments", today);
 
   await runTransaction(db, async transaction => {
+
     // READ PHASE
     const assignmentSnap = await transaction.get(assignmentRef);
 
@@ -151,7 +150,6 @@ async function allocateDailyReports(attendance, today) {
       workloadRefs.set(teacher.id, ref);
 
       const snap = await transaction.get(ref);
-
       const data = snap.exists() ? snap.data() : {};
 
       workloadData.set(teacher.id, {
@@ -162,162 +160,141 @@ async function allocateDailyReports(attendance, today) {
     }
 
     // CALCULATION PHASE
-    const usedToday = new Map();
+    const now = Date.now();
     const result = [];
     const assignedClasses = new Set();
+    const usedToday = new Map();
     const workloadTouched = new Set();
 
-    const now = Date.now();
+    const oldPendingByClass = new Map();
 
-    // Preserve valid existing assignments.
-    for (const old of oldAssignments) {
-      // Never cancel or reassign an already completed report.
-if (old.status === "completed") {
-  if (!assignedClasses.has(old.className)) {
-    result.push(old);
-    assignedClasses.add(old.className);
+    oldAssignments.forEach(old => {
+      if (old.status === "completed") {
+        if (!assignedClasses.has(old.className)) {
+          result.push(old);
+          assignedClasses.add(old.className);
 
-    usedToday.set(
-      old.teacherId,
-      (usedToday.get(old.teacherId) || 0) + 1
-    );
+          usedToday.set(
+            old.teacherId,
+            (usedToday.get(old.teacherId) || 0) + 1
+          );
+        }
+      } else if (old.status === "pending") {
+        if (!oldPendingByClass.has(old.className)) {
+          oldPendingByClass.set(old.className, old);
+        }
+      }
+    });
+
+// FAIRNESS SORTING
+function workloadSort(a, b) {
+  const wa = workloadData.get(a.id);
+  const wb = workloadData.get(b.id);
+
+  // 1. Fewer completed reports gets priority
+  if (wa.totalCompletedReports !== wb.totalCompletedReports) {
+    return wa.totalCompletedReports - wb.totalCompletedReports;
   }
 
-  continue;
+  // 2. Fewer assignments today gets priority
+  const todayA = usedToday.get(a.id) || 0;
+  const todayB = usedToday.get(b.id) || 0;
+
+  if (todayA !== todayB) {
+    return todayA - todayB;
+  }
+
+  // 3. Oldest assignment gets priority
+  return wa.lastAssignedAt - wb.lastAssignedAt;
 }
-
-      const stillAbsent = absentClasses.some(
-        c => c.className === old.className
-      );
-
-      const isNCT = eligibleNCTs.some(
-        t => t.id === old.teacherId
-      );
-
-      const isClassTeacher = availableClassTeachers.some(
-        t => t.id === old.teacherId
-      );
-
-      const limit = isNCT ? 2 : 1;
-      const currentCount = usedToday.get(old.teacherId) || 0;
-
-      let reason = "";
-
-const teacher = teachers.find(t => t.id === old.teacherId);
-
-if (!stillAbsent) {
-  reason = "class_teacher_no_longer_absent";
-} else if (!teacher?.present) {
-  reason = "assigned_teacher_not_present";
-}
-      
-      else if (!isNCT && !isClassTeacher) {
-        reason = "teacher_no_longer_eligible";
-      } else if (assignedClasses.has(old.className)) {
-        reason = "duplicate_class_assignment";
-      } else if (currentCount >= limit) {
-        reason = "daily_assignment_limit";
-      }
-
-      if (reason) {
-        history.push({
-          ...old,
-          status: "cancelled",
-          cancelledAt: now,
-          cancellationReason: reason
-        });
-
-        continue;
-      }
-
-      result.push(old);
-      assignedClasses.add(old.className);
-
-      usedToday.set(
-        old.teacherId,
-        currentCount + 1
-      );
-    }
-
-    // Fair workload sorting.
-    function workloadSort(a, b) {
-      const wa = workloadData.get(a.id);
-      const wb = workloadData.get(b.id);
-
-      if (wa.totalAssignedReports !== wb.totalAssignedReports) {
-        return wa.totalAssignedReports - wb.totalAssignedReports;
-      }
-
-      const todayA = usedToday.get(a.id) || 0;
-      const todayB = usedToday.get(b.id) || 0;
-
-      if (todayA !== todayB) {
-        return todayA - todayB;
-      }
-
-      return wa.lastAssignedAt - wb.lastAssignedAt;
-    }
-
     function assignTeacher(className, pool, limit) {
-      const candidates = pool
-        .filter(t =>
-          (usedToday.get(t.id) || 0) < limit
-        )
-        .sort(workloadSort);
+const candidates = pool
+  .filter(t =>
+    t.dailyReportClasses.includes(className) &&
+    (usedToday.get(t.id) || 0) < limit
+  )
+  .sort(workloadSort);
 
       const selected = candidates[0];
 
       if (!selected) return false;
 
-      const workload = workloadData.get(selected.id);
-      const assignedAt = Date.now();
+      const old = oldPendingByClass.get(className);
 
-      workload.totalAssignedReports += 1;
-      workload.lastAssignedAt = assignedAt;
+      // Reuse existing assignment if the same teacher remains selected.
+      if (old && old.teacherId === selected.id) {
+        result.push(old);
+        oldPendingByClass.delete(className);
+      } else {
+        const workload = workloadData.get(selected.id);
+        const assignedAt = Date.now();
 
-      workloadTouched.add(selected.id);
+        workload.totalAssignedReports += 1;
+        workload.lastAssignedAt = assignedAt;
+
+        workloadTouched.add(selected.id);
+
+        result.push({
+          className,
+          teacherId: selected.id,
+          teacherName: selected.name,
+          assignedAt,
+          status: "pending",
+          source: pool === eligibleNCTs
+            ? "nct"
+            : "class_teacher"
+        });
+      }
 
       usedToday.set(
         selected.id,
         (usedToday.get(selected.id) || 0) + 1
       );
 
-      result.push({
-        className,
-        teacherId: selected.id,
-        teacherName: selected.name,
-        assignedAt,
-        status: "pending",
-        source: pool === eligibleNCTs
-          ? "nct"
-          : "class_teacher"
-      });
-
       assignedClasses.add(className);
 
       return true;
     }
 
-    // PRIORITY 1: NCT, maximum 2 assignments.
+    // PRIORITY 1: NCT gets first preference.
     for (const item of absentClasses) {
       if (assignedClasses.has(item.className)) continue;
 
       assignTeacher(item.className, eligibleNCTs, 2);
     }
 
-    // PRIORITY 2: Class Teachers, maximum 1 assignment.
+    // PRIORITY 2: Class Teachers get only remaining classes.
     for (const item of absentClasses) {
       if (assignedClasses.has(item.className)) continue;
 
-      assignTeacher(
-        item.className,
-        availableClassTeachers,
-        1
+      assignTeacher(item.className, availableClassTeachers, 1);
+    }
+
+    // CANCEL OLD PENDING ASSIGNMENTS THAT WERE NOT REUSED.
+    for (const [className, old] of oldPendingByClass) {
+      const stillAbsent = absentClasses.some(
+        item => item.className === className
       );
+
+      const reassigned = result.some(
+        item =>
+          item.className === className &&
+          item.teacherId !== old.teacherId
+      );
+
+      history.push({
+        ...old,
+        status: "cancelled",
+        cancelledAt: now,
+        cancellationReason: !stillAbsent
+          ? "class_teacher_no_longer_absent"
+          : reassigned
+            ? "priority_reassigned"
+            : "assignment_recalculated"
+      });
     }
 
     // WRITE PHASE
-    // Only write workload documents when a new assignment is made.
     for (const teacherId of workloadTouched) {
       transaction.set(
         workloadRefs.get(teacherId),

@@ -28,6 +28,11 @@ const CLASS_LIST = [
   "Class 12 Humanities"
 ];
 
+const DAILY_REPORT_CLASS_LIST = [
+  "Class 1", "Class 2", "Class 3", "Class 4", "Class 5",
+  "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"
+];
+
 let teachers = [];
 let classTeacherMap = {};
 let savingTeachers = new Set();
@@ -96,7 +101,10 @@ async function loadTeachers() {
       id: item.id,
       name: data.name || "Unnamed Teacher",
       assignedClasses,
-      dailyReportEligible: data.dailyReportEligible === true
+      dailyReportEligible: data.dailyReportEligible === true,
+      dailyReportClasses: Array.isArray(data.dailyReportClasses)
+        ? data.dailyReportClasses
+        : []
     });
 
   });
@@ -123,6 +131,7 @@ for (const className of CLASS_LIST) {
 
 
   renderManagement();
+setupDailyReportEligibility();
 
 }
 
@@ -191,12 +200,14 @@ function renderManagement() {
 
     });
 
-    const teacherSelect = document.createElement("select");
+const teacherSelect = document.createElement("select");
 teacherSelect.className = "class-teacher-select";
 
-teacherSelect.innerHTML = `<option value="">Select Class Teacher</option>`;
+teacherSelect.innerHTML = `
+  <option value="">None (No Class Teacher)</option>
+`;
 
-assigned.forEach(teacher => {
+teachers.forEach(teacher => {
   const option = document.createElement("option");
   option.value = teacher.id;
   option.textContent = teacher.name;
@@ -206,20 +217,38 @@ assigned.forEach(teacher => {
 teacherSelect.value = classTeacherMap[className] || "";
 
 teacherSelect.addEventListener("change", async () => {
+  const selectedTeacherId = teacherSelect.value || null;
+
+  teacherSelect.disabled = true;
+
   try {
     await setDoc(
       doc(db, "class_settings", encodeURIComponent(className)),
-      { classTeacherId: teacherSelect.value }
+      {
+        classTeacherId: selectedTeacherId
+      },
+      { merge: true }
     );
 
-    classTeacherMap[className] = teacherSelect.value;
+    classTeacherMap[className] = selectedTeacherId || "";
 
     document.getElementById("backupMessage").textContent =
-      `${className} class teacher updated successfully.`;
+      selectedTeacherId
+        ? `${className} assigned successfully.`
+        : `${className} now has no Class Teacher.`;
+
+    renderManagement();
+
+    await refreshDailyReportAllocation();
+
   } catch (error) {
-    console.error(error);
+    console.error("Class Teacher Update Error:", error);
+
     document.getElementById("backupMessage").textContent =
-      "Unable to update class teacher.";
+      "Unable to update Class Teacher.";
+
+  } finally {
+    teacherSelect.disabled = false;
   }
 });
 
@@ -389,4 +418,128 @@ document.getElementById("backupMessage").textContent =
   container.appendChild(item);
 });
 
+}
+
+
+
+/* =====================================
+   DAILY REPORT CLASS ELIGIBILITY GUI
+===================================== */
+
+function setupDailyReportEligibility() {
+
+  const teacherSelect = document.getElementById("eligibilityTeacher");
+  const classContainer = document.getElementById("eligibilityClassList");
+  const saveBtn = document.getElementById("saveEligibilityBtn");
+  const message = document.getElementById("eligibilityMessage");
+
+  if (!teacherSelect || !classContainer || !saveBtn || !message) {
+    console.error("Daily Report Eligibility GUI elements missing.");
+    return;
+  }
+
+  teacherSelect.innerHTML = '<option value="">Select Teacher</option>';
+
+  teachers.forEach(teacher => {
+    const option = document.createElement("option");
+    option.value = teacher.id;
+    option.textContent = teacher.name;
+    teacherSelect.appendChild(option);
+  });
+
+  classContainer.innerHTML =
+    "<p>Select a teacher to manage class access.</p>";
+
+  saveBtn.disabled = true;
+  saveBtn.onclick = null;
+
+  teacherSelect.onchange = () => {
+
+    const teacher = teachers.find(
+      t => t.id === teacherSelect.value
+    );
+
+    classContainer.innerHTML = "";
+
+    if (!teacher) {
+      classContainer.textContent =
+        "Select a teacher to manage class access.";
+
+      saveBtn.disabled = true;
+      message.textContent = "";
+      return;
+    }
+
+    DAILY_REPORT_CLASS_LIST.forEach(className => {
+
+      const label = document.createElement("label");
+      label.className = "eligibility-class-option";
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.value = className;
+      checkbox.checked =
+        teacher.dailyReportClasses.includes(className);
+
+      const text = document.createElement("span");
+      text.textContent = className;
+
+      label.append(checkbox, text);
+      classContainer.appendChild(label);
+
+    });
+
+    saveBtn.disabled = false;
+    message.textContent = "";
+  };
+
+  saveBtn.onclick = async () => {
+
+    const teacherId = teacherSelect.value;
+
+    const teacher = teachers.find(
+      t => t.id === teacherId
+    );
+
+    if (!teacher) return;
+
+    const selectedClasses = Array.from(
+      classContainer.querySelectorAll(
+        'input[type="checkbox"]:checked'
+      )
+    ).map(checkbox => checkbox.value);
+
+    saveBtn.disabled = true;
+    message.textContent = "Saving changes...";
+
+    try {
+
+      await updateDoc(doc(db, "users", teacherId), {
+        dailyReportClasses: selectedClasses
+      });
+
+      teacher.dailyReportClasses = selectedClasses;
+
+      await refreshDailyReportAllocation();
+
+      message.textContent =
+        `${teacher.name}: ${selectedClasses.length} classes saved successfully.`;
+
+      message.style.color = "green";
+
+    } catch (error) {
+
+      console.error("Daily Report Class Eligibility Error:", error);
+
+      message.textContent =
+        "Unable to save class eligibility.";
+
+      message.style.color = "red";
+
+    } finally {
+
+      saveBtn.disabled = false;
+
+    }
+  };
 }

@@ -330,8 +330,8 @@ ${Array.from({ length: 8 }, (_, i) => `<option value="Period ${i}">Period ${i}</
 
 /* ================= CLASS MODE ================= */
 
-async function classMode(preferredClass = "") {
 
+async function classMode(preferredClass = "") {
   if (!currentUser) return;
 
   const snap = await getDoc(doc(db, "users", currentUser.uid));
@@ -339,51 +339,80 @@ async function classMode(preferredClass = "") {
 
   const data = snap.data();
 
-const manualClasses = Array.isArray(data.assigned_classes)
-  ? data.assigned_classes
-  : (data.assigned_class ? [data.assigned_class] : []);
+  // Manually assigned additional classes
+  const manualClasses = Array.isArray(data.assigned_classes)
+    ? data.assigned_classes
+    : (data.assigned_class ? [data.assigned_class] : []);
 
+  // Fetch classes where this teacher is officially selected
+  // through the Class Teacher dropdown.
+  const classSettingsSnap = await getDocs(
+    query(
+      collection(db, "class_settings"),
+      where("classTeacherId", "==", currentUser.uid)
+    )
+  );
+
+  const classTeacherClasses = classSettingsSnap.docs.map(item =>
+    decodeURIComponent(item.id)
+  );
+
+  // Class Teachers get their mapped classes + manual extras.
+  // Non-Class Teachers get only automatic assignments.
 const assignedClasses = [
   ...new Set([
+    ...classTeacherClasses,
     ...manualClasses,
     ...automaticAssignedClasses
   ])
 ];
 
-if (assignedClasses.length === 0) {
-  showToast("You are not assigned to any class!", "error");
-  return;
-}
+  if (assignedClasses.length === 0) {
+    showToast("You are not assigned to any class!", "error");
+    return;
+  }
 
-viewOnlyMode = true;
+  viewOnlyMode = true;
 
-currentClass = assignedClasses.includes(preferredClass)
-  ? preferredClass
-  : assignedClasses[0];
+  // Prefer the official Class Teacher class.
+  currentClass = assignedClasses.includes(preferredClass)
+    ? preferredClass
+    : classTeacherClasses[0] || assignedClasses[0];
 
-window.currentReportClass = currentClass;
+  window.currentReportClass = currentClass;
 
   const formSection = document.getElementById("formSection");
+
   if (formSection) {
-formSection.innerHTML = `
-  <h4>Class Teacher Report</h4>
+    formSection.innerHTML = `
+      <h4>Class Teacher Report</h4>
 
-<select id="reportClass">
-  ${assignedClasses.map(cls =>
-    `<option value="${cls}" ${cls === currentClass ? "selected" : ""}>
-      ${cls}
-    </option>`
-  ).join("")}
-</select>
+      ${
+        assignedClasses.length > 1
+          ? `
+            <select id="reportClass">
+              ${assignedClasses.map(cls => `
+                <option value="${cls}" ${cls === currentClass ? "selected" : ""}>
+                  ${cls}
+                </option>
+              `).join("")}
+            </select>
+          `
+          : `<p><strong>${currentClass}</strong></p>`
+      }
 
-  <p style="color:gray;font-size:13px">View Only Mode</p>
-`;
-document.getElementById("reportClass").addEventListener("change", (e) => {
-currentClass = e.target.value;
-window.currentReportClass = currentClass;
-loadData();
-});
+      <p style="color:gray;font-size:13px">View Only Mode</p>
+    `;
 
+    const reportClass = document.getElementById("reportClass");
+
+    if (reportClass) {
+      reportClass.addEventListener("change", (e) => {
+        currentClass = e.target.value;
+        window.currentReportClass = currentClass;
+        loadData();
+      });
+    }
   }
 
   loadData();
@@ -392,15 +421,15 @@ loadData();
   if (actionButtons) actionButtons.style.display = "flex";
 
   const pdfBtn = document.getElementById("pdfBtn");
-  if (pdfBtn) {
-pdfBtn.onclick = async () => {
-  const selectedClass = currentClass;
 
-  await generateReportImage(selectedClass); // ensure await
-};
+  if (pdfBtn) {
+    pdfBtn.onclick = async () => {
+      await generateReportImage(currentClass);
+    };
   }
 
   const shareBtn = document.getElementById("shareBtn");
+
   if (shareBtn) {
     shareBtn.onclick = () => {
       if (typeof shareReport === "function") {
@@ -412,6 +441,7 @@ pdfBtn.onclick = async () => {
     };
   }
 }
+
 
 
 /* ================= DUPLICATE ENTRY POPUP ================= */

@@ -57,12 +57,8 @@ async function loadAttendancePage() {
     teacherCache.forEach(data => {
       const id = data.id;
 
-      const hasMarked = Object.prototype.hasOwnProperty.call(
-        presentMap,
-        id
-      );
+const value = presentMap[id] === true;
 
-      const value = hasMarked ? presentMap[id] : null;
 
       const statusText =
         value === true ? "Present" :
@@ -136,10 +132,30 @@ window.toggleAttendance = async (e, teacherId) => {
     const today = getTodayDate();
     const ref = doc(db, "attendance", today);
 
-    await setDoc(ref, {
-      [teacherId]: nextValue
-    }, { merge: true });
+    // Initialize all teachers as absent
+    const attendanceDefaults = {};
 
+    teacherCache.forEach(teacher => {
+      attendanceDefaults[teacher.id] = false;
+    });
+
+    // Preserve existing attendance
+    const snap = await getDoc(ref);
+
+    const currentAttendance = snap.exists()
+      ? snap.data()
+      : {};
+
+    const updatedAttendance = {
+      ...attendanceDefaults,
+      ...currentAttendance,
+      [teacherId]: nextValue
+    };
+
+    // Save attendance
+    await setDoc(ref, updatedAttendance);
+
+    // Update UI
     if (nextValue) {
       statusTag.textContent = "Present";
       statusTag.className = "tag green";
@@ -153,6 +169,16 @@ window.toggleAttendance = async (e, teacherId) => {
 
       btn.textContent = "Mark Present ✅";
       btn.dataset.nextValue = "true";
+    }
+
+    // Trigger allocation
+    try {
+      await refreshDailyReportAllocation();
+    } catch (allocationError) {
+      console.error(
+        "Daily Report Allocation Error:",
+        allocationError
+      );
     }
 
   } catch (err) {

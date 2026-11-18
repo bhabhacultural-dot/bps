@@ -21,27 +21,71 @@ function getTodayKey() {
   return local.toISOString().slice(0, 10);
 }
 
-/* LOAD TEMPLATE */
 
-async function loadReportTemplate(){
-  const container = document.getElementById("reportContainer");
-  if(!container) return;
+/* LOAD TEMPLATE - SINGLE SHARED PROMISE */
 
-  const res = await fetch("/components/homework-report.html");
-  const html = await res.text();
+let reportTemplatePromise = null;
 
-  container.innerHTML = html;
+function loadReportTemplate() {
+  if (!reportTemplatePromise) {
+    reportTemplatePromise = (async () => {
+      const container = document.getElementById("reportContainer");
+
+      if (!container) {
+        throw new Error("Report container not found.");
+      }
+
+      const response = await fetch("/components/homework-report.html");
+
+      if (!response.ok) {
+        throw new Error(
+          `Report template loading failed: ${response.status}`
+        );
+      }
+
+      container.innerHTML = await response.text();
+
+      const requiredElements = [
+        "reportPage",
+        "reportBody",
+        "className",
+        "teacherName",
+        "reportDate",
+        "reportDay"
+      ];
+
+      for (const id of requiredElements) {
+        if (!document.getElementById(id)) {
+          throw new Error(`Report template element missing: ${id}`);
+        }
+      }
+
+      return document.getElementById("reportPage");
+    })();
+  }
+
+  return reportTemplatePromise;
 }
 
-document.addEventListener("DOMContentLoaded", loadReportTemplate);
+document.addEventListener("DOMContentLoaded", () => {
+  loadReportTemplate().catch(error => {
+    console.error("Report template initialization error:", error);
+  });
+});
+
 
 
 
 /* COMMON FUNCTION (DATA FILL) */
 
-async function prepareReport(selectedClass){
+async function prepareReport(selectedClass) {
+  await loadReportTemplate();
 
   const element = document.getElementById("reportPage");
+
+  if (!element) {
+    throw new Error("Report page is not ready.");
+  }
 
   const today = getTodayKey()
 
@@ -115,7 +159,7 @@ document.getElementById("teacherName").innerText =
 window.generateReportImage = async function(selectedClass) {
 
     try {
-        const today = new Date().toISOString().split("T")[0];
+        const today = getTodayKey();
 
         // Check today's entries for this class
         const q = query(
@@ -176,7 +220,7 @@ window.generateReportImage = async function(selectedClass) {
 
 /* ================= INCOMPLETE PERIOD DIALOG ================= */
 
-function showMissingPeriodsDialog(missingPeriods, continueLabel = "Still Share") {
+function showMissingPeriodsDialog(missingPeriods, continueLabel = "Share Anyway") {
     return new Promise((resolve) => {
 
         const overlay = document.createElement("div");
@@ -386,6 +430,26 @@ async function markDailyReportAssignmentCompleted(selectedClass) {
   }
 }
 
+async function hasPendingBackupAssignment(selectedClass) {
+    const user = auth.currentUser;
+    if (!user) return false;
+
+    const today = getTodayKey();
+
+    const assignmentSnap = await getDoc(
+        doc(db, "daily_report_assignments", today)
+    );
+
+    if (!assignmentSnap.exists()) return false;
+
+    const assignments = assignmentSnap.data().assignments || [];
+
+    return assignments.some(item =>
+        item.className === selectedClass &&
+        item.teacherId === user.uid &&
+        item.status === "pending"
+    );
+}
 
 /* ================= SHARE REPORT ================= */
 
@@ -454,22 +518,38 @@ window.shareReport = async function() {
             type: "image/png"
         });
 
-if (navigator.share) {
-    await navigator.share({
-        files: [file],
-        title: "Homework Report"
-    });
 
+if (!navigator.share) {
+    alert("Sharing is not supported on this browser.");
+    return;
+}
+
+// Check whether this browser supports sharing image files.
+if (
+    navigator.canShare &&
+    !navigator.canShare({ files: [file] })
+) {
+    alert(
+        "This browser cannot share report images. Please use Download Report."
+    );
+    return;
+}
+
+await navigator.share({
+    files: [file],
+    title: `Homework Report - ${selectedClass}`
+});
+
+const isBackupAssigned = await hasPendingBackupAssignment(selectedClass);
+
+if (isBackupAssigned) {
     const confirmShared = confirm(
-        "Did you successfully share this report to the class WhatsApp group?"
+        `Did you successfully share the ${selectedClass} report to the class WhatsApp group?`
     );
 
     if (confirmShared) {
         await markDailyReportAssignmentCompleted(selectedClass);
     }
-
-} else {
-    alert("Sharing not supported on this device.");
 }
 
     } catch (error) {
