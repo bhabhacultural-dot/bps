@@ -1,33 +1,23 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { auth, db } from "./firebase.js";
-import { startDailyReportNotifications } from "./daily-report-notifications.js";
+
 import {
   collection,
   addDoc,
   query,
   where,
-  orderBy,
   getDocs,
   updateDoc,
   deleteDoc,
   doc,
-  getDoc,
-  onSnapshot
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-function getTodayKey() {
-  const d = new Date();
-  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
-  return local.toISOString().slice(0, 10);
-}
-
-let today = getTodayKey();
+let today = new Date().toISOString().split("T")[0];
 let currentClass = "";
 let viewOnlyMode = false;
 let editingId = null;
 let currentUser = null;
-let automaticAssignedClasses = [];
-let unsubscribeDailyAssignments = null;
 
 /* ================= PROFILE ================= */
 
@@ -76,87 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-
-/* ================= ATTENDANCE ACCESS CHECK ================= */
-
-function showAttendanceRequiredPopup() {
-    const overlay = document.createElement("div");
-
-    Object.assign(overlay.style, {
-        position: "fixed",
-        inset: "0",
-        zIndex: "999999",
-        background: "rgba(0,0,0,0.6)",
-        backdropFilter: "blur(5px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "20px"
-    });
-
-    const dialog = document.createElement("div");
-
-    Object.assign(dialog.style, {
-        width: "100%",
-        maxWidth: "390px",
-        background: "#fff",
-        color: "#222",
-        borderRadius: "16px",
-        padding: "28px 22px",
-        textAlign: "center",
-        boxShadow: "0 15px 45px rgba(0,0,0,.2)",
-        fontFamily: "inherit"
-    });
-
-    const heading = document.createElement("h3");
-    heading.textContent = "Attendance Required";
-
-    const message = document.createElement("p");
-    message.textContent = "Please mark your attendance first before accessing the Daily Report.";
-
-    Object.assign(message.style, {
-        color: "#666",
-        fontSize: "14px",
-        lineHeight: "1.7",
-        margin: "12px 0 22px"
-    });
-
-    const button = document.createElement("button");
-    button.textContent = "Go to Dashboard";
-
-    Object.assign(button.style, {
-        width: "100%",
-        padding: "13px",
-        border: "none",
-        borderRadius: "9px",
-        background: "#222",
-        color: "#fff",
-        fontSize: "15px",
-        fontWeight: "600",
-        cursor: "pointer"
-    });
-
-    button.addEventListener("click", () => {
-        window.location.replace("teacher-dashboard.html");
-    });
-
-    dialog.append(heading, message, button);
-    overlay.appendChild(dialog);
-    document.body.appendChild(overlay);
-}
-
-async function hasMarkedAttendance(uid) {
-    const today = getTodayKey();
-
-    const attendanceRef = doc(db, "attendance", today);
-    const attendanceSnap = await getDoc(attendanceRef);
-
-    return attendanceSnap.exists() &&
-        attendanceSnap.data()[uid] === true;
-}
-
-
-
 /* ================= AUTH ================= */
 
 onAuthStateChanged(auth, async (user) => {
@@ -165,97 +74,16 @@ onAuthStateChanged(auth, async (user) => {
 
   currentUser = user;
 
-  try {
-    // USER PROFILE
-    const userProfileSnap = await getDoc(
-      doc(db, "users", user.uid)
-    );
+  await loadProfilePhoto();
 
-    if (!userProfileSnap.exists()) return;
+  const name = localStorage.getItem("user_name");
+  const welcome = document.getElementById("welcomeUser");
 
-    const userData = userProfileSnap.data();
-
-    window.currentUserRole = userData.role;
-
-    // START NOTIFICATIONS
-    if (userData.role === "teacher") {
-      startDailyReportNotifications();
-    }
-
-    // CHECK ATTENDANCE
-    const isPresent = await hasMarkedAttendance(user.uid);
-
-    if (!isPresent) {
-      showAttendanceRequiredPopup();
-      return;
-    }
-
-    document.body.classList.remove("attendance-gated");
-
-    await loadProfilePhoto();
-
-    const name = localStorage.getItem("user_name");
-    const welcome = document.getElementById("welcomeUser");
-
-    if (name && welcome) {
-      welcome.innerText = "Welcome, " + name;
-    }
-
-// REALTIME AUTOMATIC ASSIGNMENTS
-const assignmentRef = doc(
-  db,
-  "daily_report_assignments",
-  today
-);
-
-unsubscribeDailyAssignments?.();
-
-unsubscribeDailyAssignments = onSnapshot(
-  assignmentRef,
-  async (assignmentSnap) => {
-
-    const assignments = assignmentSnap.exists()
-      ? assignmentSnap.data().assignments || []
-      : [];
-
-    const updatedClasses = assignments
-      .filter(item =>
-        item.teacherId === user.uid &&
-        item.status === "pending"
-      )
-      .map(item => item.className);
-
-    const hasChanged =
-      JSON.stringify(automaticAssignedClasses) !==
-      JSON.stringify(updatedClasses);
-
-    automaticAssignedClasses = updatedClasses;
-
-    const requestedClass = new URLSearchParams(
-      window.location.search
-    ).get("assignedClass");
-
-    if (
-      requestedClass &&
-      automaticAssignedClasses.includes(requestedClass)
-    ) {
-      await classMode(requestedClass);
-    } else if (hasChanged && viewOnlyMode) {
-      await classMode(currentClass);
-    } else if (!viewOnlyMode) {
-      subjectMode();
-    }
-
-  },
-  (error) => {
-    console.error("Assignment listener error:", error);
+  if (name && welcome) {
+    welcome.innerText = "Welcome, " + name;
   }
-);
 
-  } catch (error) {
-    console.error("Daily Report initialization failed:", error);
-    showAttendanceRequiredPopup();
-  }
+  subjectMode();
 
 });
 
@@ -273,7 +101,7 @@ function subjectMode() {
 
 <select id="period">
 <option value="">Select Period</option>
-${Array.from({ length: 8 }, (_, i) => `<option value="Period ${i}">Period ${i}</option>`).join("")}
+${Array.from({ length: 9 }, (_, i) => `<option value="Period ${i}">Period ${i}</option>`).join("")}
 </select>
 
 <select id="class">
@@ -330,8 +158,8 @@ ${Array.from({ length: 8 }, (_, i) => `<option value="Period ${i}">Period ${i}</
 
 /* ================= CLASS MODE ================= */
 
+async function classMode() {
 
-async function classMode(preferredClass = "") {
   if (!currentUser) return;
 
   const snap = await getDoc(doc(db, "users", currentUser.uid));
@@ -339,80 +167,20 @@ async function classMode(preferredClass = "") {
 
   const data = snap.data();
 
-  // Manually assigned additional classes
-  const manualClasses = Array.isArray(data.assigned_classes)
-    ? data.assigned_classes
-    : (data.assigned_class ? [data.assigned_class] : []);
-
-  // Fetch classes where this teacher is officially selected
-  // through the Class Teacher dropdown.
-  const classSettingsSnap = await getDocs(
-    query(
-      collection(db, "class_settings"),
-      where("classTeacherId", "==", currentUser.uid)
-    )
-  );
-
-  const classTeacherClasses = classSettingsSnap.docs.map(item =>
-    decodeURIComponent(item.id)
-  );
-
-  // Class Teachers get their mapped classes + manual extras.
-  // Non-Class Teachers get only automatic assignments.
-const assignedClasses = [
-  ...new Set([
-    ...classTeacherClasses,
-    ...manualClasses,
-    ...automaticAssignedClasses
-  ])
-];
-
-  if (assignedClasses.length === 0) {
-    showToast("You are not assigned to any class!", "error");
+  if (!data.assigned_class) {
+    showToast("You are not assigned as class teacher!", "error");
     return;
   }
 
   viewOnlyMode = true;
-
-  // Prefer the official Class Teacher class.
-  currentClass = assignedClasses.includes(preferredClass)
-    ? preferredClass
-    : classTeacherClasses[0] || assignedClasses[0];
-
-  window.currentReportClass = currentClass;
+  currentClass = data.assigned_class;
 
   const formSection = document.getElementById("formSection");
-
   if (formSection) {
     formSection.innerHTML = `
-      <h4>Class Teacher Report</h4>
-
-      ${
-        assignedClasses.length > 1
-          ? `
-            <select id="reportClass">
-              ${assignedClasses.map(cls => `
-                <option value="${cls}" ${cls === currentClass ? "selected" : ""}>
-                  ${cls}
-                </option>
-              `).join("")}
-            </select>
-          `
-          : `<p><strong>${currentClass}</strong></p>`
-      }
-
-      <p style="color:gray;font-size:13px">View Only Mode</p>
-    `;
-
-    const reportClass = document.getElementById("reportClass");
-
-    if (reportClass) {
-      reportClass.addEventListener("change", (e) => {
-        currentClass = e.target.value;
-        window.currentReportClass = currentClass;
-        loadData();
-      });
-    }
+<h4>Viewing ${currentClass}</h4>
+<p style="color:gray;font-size:13px">View Only Mode</p>
+`;
   }
 
   loadData();
@@ -421,15 +189,15 @@ const assignedClasses = [
   if (actionButtons) actionButtons.style.display = "flex";
 
   const pdfBtn = document.getElementById("pdfBtn");
-
   if (pdfBtn) {
-    pdfBtn.onclick = async () => {
-      await generateReportImage(currentClass);
-    };
+pdfBtn.onclick = async () => {
+  const selectedClass = localStorage.getItem("assigned_class");
+
+  await generateReportImage(selectedClass); // ensure await
+};
   }
 
   const shareBtn = document.getElementById("shareBtn");
-
   if (shareBtn) {
     shareBtn.onclick = () => {
       if (typeof shareReport === "function") {
@@ -441,98 +209,6 @@ const assignedClasses = [
     };
   }
 }
-
-
-
-/* ================= DUPLICATE ENTRY POPUP ================= */
-
-function showDuplicateDialog(teacherName, period, cls) {
-    document.getElementById("duplicateEntryModal")?.remove();
-
-    const overlay = document.createElement("div");
-    overlay.id = "duplicateEntryModal";
-
-    Object.assign(overlay.style, {
-        position: "fixed",
-        inset: "0",
-        background: "rgba(0,0,0,0.55)",
-        backdropFilter: "blur(4px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "20px",
-        zIndex: "99999"
-    });
-
-    const dialog = document.createElement("div");
-
-    Object.assign(dialog.style, {
-        width: "100%",
-        maxWidth: "400px",
-        background: "#fff",
-        color: "#222",
-        borderRadius: "16px",
-        padding: "26px 22px",
-        textAlign: "center",
-        boxShadow: "0 15px 45px rgba(0,0,0,.2)",
-        fontFamily: "inherit"
-    });
-
-    const heading = document.createElement("h3");
-    heading.textContent = "Duplicate Entry";
-    heading.style.margin = "0 0 14px";
-
-    const message = document.createElement("p");
-    const boldText = (text) => {
-    const strong = document.createElement("strong");
-    strong.textContent = text;
-    return strong;
-};
-
-message.append(
-    document.createTextNode(" "),
-    boldText(teacherName),
-    document.createTextNode(" has already submitted an entry for "),
-    boldText(period),
-    document.createTextNode(", "),
-    boldText(cls),
-    document.createTextNode(
-        ". If you think this is incorrect, please contact "
-    ),
-    boldText(teacherName),
-    document.createTextNode(".")
-);
-    Object.assign(message.style, {
-        fontSize: "14px",
-        lineHeight: "1.7",
-        color: "#555",
-        overflowWrap: "anywhere",
-        margin: "0"
-    });
-
-    const button = document.createElement("button");
-    button.textContent = "OK";
-
-    Object.assign(button.style, {
-        width: "100%",
-        marginTop: "22px",
-        padding: "12px",
-        border: "none",
-        borderRadius: "9px",
-        background: "#222",
-        color: "#fff",
-        fontSize: "15px",
-        fontWeight: "600",
-        cursor: "pointer"
-    });
-
-    button.addEventListener("click", () => overlay.remove());
-
-    dialog.append(heading, message, button);
-    overlay.appendChild(dialog);
-    document.body.appendChild(overlay);
-}
-
 
 /* ================= SAVE ENTRY ================= */
 
@@ -559,37 +235,9 @@ async function saveEntry() {
     return;
   }
 
-
-try {
-
-    // Check duplicate date + class + period
-    const duplicateQuery = query(
-        collection(db, "homework"),
-        where("date", "==", today),
-        where("class", "==", cls),
-        where("period", "==", period)
-    );
-
-    const duplicateSnap = await getDocs(duplicateQuery);
-
-    const duplicateDoc = duplicateSnap.docs.find(
-        item => item.id !== editingId
-    );
-
-    if (duplicateDoc) {
-        const duplicateData = duplicateDoc.data();
-
-        showDuplicateDialog(
-            duplicateData.teacherName || "Another teacher",
-            period,
-            cls
-        );
-
-        return;
-    }
+  try {
 
     if (editingId) {
-
 
       await updateDoc(doc(db, "homework", editingId), {
         class: cls,
@@ -764,14 +412,9 @@ async function loadTeacherSubjects() {
 
   subjects.forEach(sub => {
     subjectDropdown.innerHTML += `<option value="${sub}">${sub}</option>`;
-});
+  });
 
-// Activity available for every teacher
-if (!subjects.includes("Activity")) {
-    subjectDropdown.innerHTML += `<option value="Activity">Activity</option>`;
-}
-
-subjectDropdown.innerHTML += `<option value="Other">Other</option>`;
+  subjectDropdown.innerHTML += `<option value="Other">Other</option>`;
 }
 
 /* ================= MENU ================= */

@@ -12,12 +12,7 @@ import {
   setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-
-
 import { generateProxies } from "./proxy-engine.js";
-
-
-import { startDailyReportNotifications } from "./daily-report-notifications.js";
 
 // 🔹 Helpers
 function getTodayDate() {
@@ -41,20 +36,8 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   console.log("Logged in ✅", user.uid);
-
-  const principalSnap = await getDoc(doc(db, "users", user.uid));
-
-  if (!principalSnap.exists() || principalSnap.data().role !== "principal") {
-    console.log("Principal access required");
-    return;
-  }
-
-  window.currentUserRole = "principal";
-
-  startDailyReportNotifications();
-
   await loadDashboard();
-
+  
 });
 
 // 🔥 MAIN
@@ -80,9 +63,10 @@ async function loadDashboard() {
 
   document.getElementById("totalTeachers").innerText = totalTeachers;
 
-await loadAttendance(usersList);
-await loadProxies(usersList);
-await calculateTotalClasses(usersList);
+  await loadAttendance(usersList);
+  await loadProxies(usersList);
+  await calculateTotalClasses(usersList);
+  listenAttendance(usersList);
 
 }
 

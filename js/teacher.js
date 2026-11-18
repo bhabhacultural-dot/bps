@@ -196,112 +196,6 @@ if(typeof shareReport === "function"){
 }
 
 
-/* ================= DUPLICATE ENTRY DIALOG ================= */
-
-function showDuplicateDialog(teacherName, period, cls) {
-    const existing = document.getElementById("duplicateEntryModal");
-    if (existing) existing.remove();
-
-    if (!document.getElementById("duplicateDialogStyles")) {
-        const style = document.createElement("style");
-        style.id = "duplicateDialogStyles";
-        style.textContent = `
-            .duplicate-overlay {
-                position: fixed;
-                inset: 0;
-                background: rgba(0,0,0,.55);
-                backdrop-filter: blur(4px);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 20px;
-                z-index: 99999;
-            }
-            .duplicate-dialog {
-                width: 100%;
-                max-width: 400px;
-                background: #fff;
-                color: #222;
-                border-radius: 16px;
-                padding: 26px 22px;
-                text-align: center;
-                box-shadow: 0 15px 45px rgba(0,0,0,.2);
-                font-family: inherit;
-            }
-            .duplicate-dialog .duplicate-icon {
-                width: 48px;
-                height: 48px;
-                margin: 0 auto 14px;
-                border-radius: 50%;
-                display: grid;
-                place-items: center;
-                background: #fff3cd;
-                color: #9a6700;
-                font-size: 25px;
-            }
-            .duplicate-dialog h3 {
-                margin: 0 0 12px;
-                font-size: 19px;
-            }
-            .duplicate-dialog p {
-                margin: 0;
-                line-height: 1.65;
-                font-size: 14px;
-                color: #555;
-                overflow-wrap: anywhere;
-            }
-            .duplicate-dialog button {
-                width: 100%;
-                margin-top: 22px;
-                padding: 12px;
-                border: 0;
-                border-radius: 9px;
-                background: #222;
-                color: white;
-                font-size: 15px;
-                font-weight: 600;
-                cursor: pointer;
-            }
-            @media(max-width: 480px) {
-                .duplicate-dialog {
-                    padding: 23px 18px;
-                    border-radius: 14px;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    const overlay = document.createElement("div");
-    overlay.id = "duplicateEntryModal";
-    overlay.className = "duplicate-overlay";
-
-    const dialog = document.createElement("div");
-    dialog.className = "duplicate-dialog";
-
-    const icon = document.createElement("div");
-    icon.className = "duplicate-icon";
-    icon.textContent = "!";
-
-    const heading = document.createElement("h3");
-    heading.textContent = "Duplicate Entry";
-
-    const message = document.createElement("p");
-    message.textContent =
-        `${teacherName} has already submitted an entry for ${period}, ${cls}. ` +
-        `If you think this is incorrect, please contact ${teacherName}.`;
-
-    const okButton = document.createElement("button");
-    okButton.textContent = "OK";
-    okButton.addEventListener("click", () => overlay.remove());
-
-    dialog.append(icon, heading, message, okButton);
-    overlay.appendChild(dialog);
-    document.body.appendChild(overlay);
-}
-
-
-
 /* ================= SAVE ENTRY ================= */
 
 async function saveEntry(){
@@ -327,33 +221,7 @@ async function saveEntry(){
     return;
   }
 
-try {
-
-    // Check duplicate date + class + period
-    const duplicateQuery = query(
-        collection(db, "homework"),
-        where("date", "==", today),
-        where("class", "==", cls),
-        where("period", "==", period)
-    );
-
-    const duplicateSnap = await getDocs(duplicateQuery);
-
-    const duplicateDoc = duplicateSnap.docs.find(
-        item => item.id !== editingId
-    );
-
-    if (duplicateDoc) {
-        const duplicateData = duplicateDoc.data();
-
-        showDuplicateDialog(
-            duplicateData.teacherName || "Another teacher",
-            period,
-            cls
-        );
-
-        return;
-    }
+  try{
 
     if(editingId){
 

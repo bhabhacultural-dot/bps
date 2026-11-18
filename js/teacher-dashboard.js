@@ -1,9 +1,5 @@
 import { db, auth } from "./firebase.js";
 
-import { startDailyReportNotifications } from "./daily-report-notifications.js";
-
-import { refreshDailyReportAllocation } from "./daily-report-allocation.js";
-
 import {
   doc,
   getDoc,
@@ -46,21 +42,14 @@ auth.onAuthStateChanged(async (user) => {
   // 🔥 USER NAME
   const userSnap = await getDoc(doc(db, "users", user.uid));
 
-if (userSnap.exists()) {
-  const userData = userSnap.data();
-  const name = userData.name || "Teacher";
+  if (userSnap.exists()) {
+    const name = userSnap.data().name || "Teacher";
 
-  window.currentUserRole = userData.role;
-
-  const welcomeEl = document.getElementById("welcomeText");
-  if (welcomeEl) {
-    welcomeEl.innerText = `Welcome, ${name}`;
+    const welcomeEl = document.getElementById("welcomeText");
+    if (welcomeEl) {
+      welcomeEl.innerText = `Welcome, ${name}`;
+    }
   }
-
-  if (userData.role === "teacher") {
-    startDailyReportNotifications();
-  }
-}
 
   // 🔥 BUTTON
   const btn = document.getElementById("markBtn");
@@ -102,7 +91,7 @@ async function checkAttendance(uid) {
         yes.onclick = async () => {
           popup.style.display = "none";
 
-          await markAttendance(uid);
+          await setDoc(ref, { [uid]: true }, { merge: true });
           await checkAttendance(uid);
         };
 
@@ -149,33 +138,9 @@ async function markAttendance(uid) {
     const today = getTodayDate();
     const ref = doc(db, "attendance", today);
 
-    // Initialize all teachers as absent, only if missing
-    const usersSnap = await getDocs(collection(db, "users"));
-    const attendanceSnap = await getDoc(ref);
+    await setDoc(ref, { [uid]: true }, { merge: true });
 
-    const defaults = {};
-
-    usersSnap.forEach(d => {
-      if (d.data().role === "teacher") {
-        defaults[d.id] = false;
-      }
-    });
-
-    const current = attendanceSnap.exists()
-      ? attendanceSnap.data()
-      : {};
-
-    await setDoc(ref, {
-      ...defaults,
-      ...current,
-      [uid]: true
-    });
-
-    // Trigger allocation immediately
-    await refreshDailyReportAllocation();
-
-    console.log("✅ Attendance marked and report allocation triggered");
-
+    console.log("✅ Attendance marked");
     await checkAttendance(uid);
 
   } catch (err) {

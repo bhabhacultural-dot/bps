@@ -2,7 +2,6 @@ export const routes = {
   pdashboard: "principal-dashboard.html",
   notice: "notice/notice.html",
   proxy: "under-construction.html",
-  backupmanagement: "teacher-backup-management.html",
   timetableeditor: "timetable.html",
   pcalendar: "principal-calendar.html",
   preport:"principal-daily-report.html.html",

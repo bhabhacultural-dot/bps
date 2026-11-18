@@ -464,21 +464,6 @@
 
 <!-- toast (kept) -->
 <div id="toast"></div>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const eye = document.getElementById("togglePassword");
-    const password = document.getElementById("password");
-
-    if (!eye || !password) return;
-
-    eye.addEventListener("click", function () {
-        const show = password.type === "password";
-
-        password.type = show ? "text" : "password";
-        eye.textContent = show ? "🙈" : "👁";
-    });
-});
-</script>
 
 <!-- all scripts unchanged (exactly as before) -->
 <script type="module" src="js/auth.js"></script>

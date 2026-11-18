@@ -38,21 +38,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ================= PASSWORD TOGGLE =================
 
-// ================= PASSWORD TOGGLE =================
+  const togglePassword = document.getElementById("togglePassword");
+  const passwordInput = document.getElementById("password");
 
-const togglePassword = document.getElementById("togglePassword");
-const passwordInput = document.getElementById("password");
+  if(togglePassword){
+    togglePassword.addEventListener("click", () => {
+      const type =
+        passwordInput.getAttribute("type") === "password"
+          ? "text"
+          : "password";
 
-if (togglePassword && passwordInput) {
-  togglePassword.addEventListener("click", (e) => {
-    e.preventDefault();
+      passwordInput.setAttribute("type", type);
+      togglePassword.textContent =
+        type === "password" ? "👁" : "🙈";
+    });
+  }
 
-    const isPassword = passwordInput.type === "password";
-
-    passwordInput.type = isPassword ? "text" : "password";
-    togglePassword.textContent = isPassword ? "🙈" : "👁";
-  });
-}
 
   // ================= PANEL SWITCHING =================
 
@@ -94,37 +95,15 @@ if (togglePassword && passwordInput) {
   }
 
 
-// ================= LOGIN BUTTON =================
+  // ================= LOGIN BUTTON =================
 
-const loginBtn = document.getElementById("loginBtn");
-const emailInput = document.getElementById("email");
+  const loginBtn = document.getElementById("loginBtn");
+  if(loginBtn) loginBtn.addEventListener("click", login);
 
-if (loginBtn) {
-    loginBtn.addEventListener("click", login);
-}
-
-if (emailInput) {
-    emailInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            passwordInput.focus();
-        }
-    });
-}
-
-if (passwordInput) {
-    passwordInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            loginBtn.click();
-        }
-    });
-}
-
-const googleBtn = document.getElementById("googleLoginBtn");
+  const googleBtn = document.getElementById("googleLoginBtn");
 
 if (googleBtn) {
-    googleBtn.addEventListener("click", loginWithGoogle);
+  googleBtn.addEventListener("click", loginWithGoogle);
 }
 
 
@@ -304,68 +283,48 @@ window.logout = logout;
 
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-
 onAuthStateChanged(auth, async (user) => {
 
-    const currentPage = window.location.pathname.split("/").pop();
-    const isLoginPage = currentPage === "index.html" || currentPage === "";
+  const currentPage = window.location.pathname.split("/").pop();
 
-    // Not logged in
-    if (!user) {
-        if (!isLoginPage) {
-            window.location.replace("index.html");
-        }
-        return;
+  // Not logged in → block private pages
+  if(!user && currentPage !== "index.html"){
+    window.location.href = "index.html";
+    return;
+  }
+
+  // Logged in → decide page based on role
+  if(user){
+
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+
+    if(!userDoc.exists()) return;
+
+    const profile = userDoc.data();
+
+    // If on login page → redirect properly
+    if(currentPage === "index.html"){
+
+      if(profile.role === "principal"){
+        window.location.href = "principal-daily-report.html";
+      } else {
+        window.location.href = "teacher-dashboard.html";
+      }
+
     }
 
-    try {
-        // Fetch logged-in user's profile
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-
-        if (!userDoc.exists()) {
-            if (!isLoginPage) {
-                window.location.replace("index.html");
-            }
-            return;
-        }
-
-        const profile = userDoc.data();
-        const isPrincipal = profile.role === "principal";
-
-        // Redirect from login page based on role
-        if (isLoginPage) {
-            window.location.replace(
-                isPrincipal
-                    ? "principal-dashboard.html"
-                    : "teacher-dashboard.html"
-            );
-            return;
-        }
-
-        // Principal accessing teacher dashboard
-        if (isPrincipal && currentPage === "teacher-dashboard.html") {
-            window.location.replace("principal-dashboard.html");
-            return;
-        }
-
-        // Teacher accessing principal pages
-        if (
-            !isPrincipal &&
-            (
-                currentPage === "principal-dashboard.html" ||
-                currentPage === "principal-daily-report.html"
-            )
-        ) {
-            window.location.replace("teacher-dashboard.html");
-            return;
-        }
-
-    } catch (error) {
-        console.error("Auth State Guard Error:", error);
+    // Prevent principal accessing teacher dashboard
+    if(profile.role === "principal" && currentPage === "teacher-dashboard.html"){
+      window.location.href = "principal-daily-report.html";
     }
+
+    // Prevent teacher accessing principal page
+    if(profile.role !== "principal" && currentPage === "principal-daily-report.html"){
+      window.location.href = "teacher-dashboard.html";
+    }
+  }
 
 });
-
 
 // ================= TOAST FUNCTION =================
 
@@ -391,16 +350,9 @@ async function loginWithGoogle() {
 
   try {
 
-const remember = document.getElementById("rememberMe")?.checked;
+    const provider = new GoogleAuthProvider();
 
-await setPersistence(
-  auth,
-  remember ? browserLocalPersistence : browserSessionPersistence
-);
-
-const provider = new GoogleAuthProvider();
-
-const result = await signInWithPopup(auth, provider);
+    const result = await signInWithPopup(auth, provider);
 
     const user = result.user;
 

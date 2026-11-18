@@ -28,10 +28,6 @@ Notice Generator
 Proxy System
 </a>
 
-<a onclick="go('backupmanagement')" data-title="Teacher Backup Management">
-Teacher Backup Management
-</a>
-
 <a onclick="go('exam')" data-title="Examination">
 Examination
 </a>
